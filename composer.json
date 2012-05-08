@@ -1,0 +1,22 @@
+{
+    "name": "juliendidier/buzz-bundle",
+    "description": "A Symfony2 Bundle for Buzz library integration",
+    "license": "MIT",
+    "type": "symfony-bundle",
+    "authors": [
+        {
+            "name": "Julien DIDIER",
+            "email": "julien@jdidier.net",
+            "homepage": "http://jdidier.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/symfony": ">=2.0",
+        "kriswallsmith/buzz": "dev-master"
+    },
+    "autoload": {
+        "psr-0": { "Buzz\\Bundle\\BuzzBundle": "" }
+    },
+    "target-dir": "Buzz/Bundle/BuzzBundle"
+}
