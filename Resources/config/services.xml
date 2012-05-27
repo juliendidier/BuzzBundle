@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="buzz.class">Buzz\Bundle\BuzzBundle\Buzz\Buzz</parameter>
+        <parameter key="buzz.client.curl.class">Buzz\Client\Curl</parameter>
+        <parameter key="buzz.browser.class">Buzz\Bundle\BuzzBundle\Buzz\Browser\Browser</parameter>
+        <parameter key="buzz.browser_factory.class">Buzz\Bundle\BuzzBundle\DependencyInjection\Factory\Browser\BrowserFactory</parameter>
+        <parameter key="buzz.client.class">Buzz\Bundle\BuzzBundle\Buzz\Client\Client</parameter>
+    </parameters>
+    <services>
+        <service id="buzz.client.curl" class="%buzz.client.curl.class%">
+        </service>
+        <service id="buzz.browser_factory" class="%buzz.browser_factory.class%">
+        </service>
+        <service id="buzz" class="%buzz.class%">
+            <argument />
+        </service>
+        <service id="buzz.browser" class="%buzz.browser.class%">
+            <argument type="service" id="buzz.client" />
+            <argument />
+        </service>
+        <service id="buzz.client" class="%buzz.client.class%">
+            <tag name="buzz.client" />
+        </service>
+    </services>
+</container>

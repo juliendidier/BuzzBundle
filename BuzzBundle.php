@@ -7,4 +7,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class BuzzBundle extends Bundle
 {
+    public function build(ContainerBuilder $container)
+    {
+        $container->addCompilerPass(new DependencyInjection\Compiler\BuzzPass());
+    }
 }
