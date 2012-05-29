@@ -6,21 +6,26 @@
 
     <parameters>
         <parameter key="buzz.class">Buzz\Bundle\BuzzBundle\Buzz\Buzz</parameter>
+        <parameter key="buzz.browser.class">Buzz\Browser</parameter>
         <parameter key="buzz.client.curl.class">Buzz\Client\Curl</parameter>
-        <parameter key="buzz.browser.class">Buzz\Bundle\BuzzBundle\Buzz\Browser\Browser</parameter>
+        <parameter key="buzz.message_factory.class">Buzz\Bundle\BuzzBundle\Message\Factory</parameter>
         <parameter key="buzz.browser_factory.class">Buzz\Bundle\BuzzBundle\DependencyInjection\Factory\Browser\BrowserFactory</parameter>
         <parameter key="buzz.client.class">Buzz\Bundle\BuzzBundle\Buzz\Client\Client</parameter>
     </parameters>
     <services>
+        <service id="buzz" class="%buzz.class%">
+            <argument type="service" id="service_container" />
+            <argument type="collection" />
+        </service>
         <service id="buzz.client.curl" class="%buzz.client.curl.class%">
         </service>
         <service id="buzz.browser_factory" class="%buzz.browser_factory.class%">
         </service>
-        <service id="buzz" class="%buzz.class%">
+        <service id="buzz.browser" class="%buzz.browser.class%" abstract="true">
+            <argument />
             <argument />
         </service>
-        <service id="buzz.browser" class="%buzz.browser.class%">
-            <argument type="service" id="buzz.client" />
+        <service id="buzz.message_factory" class="%buzz.message_factory.class%">
             <argument />
         </service>
         <service id="buzz.client" class="%buzz.client.class%">

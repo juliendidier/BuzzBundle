@@ -36,7 +36,7 @@ class BuzzExtension extends Extension
         $container
             ->setDefinition($provider, $definition)
             ->replaceArgument(0, new Reference($config['client']))
-            ->replaceArgument(1, $config['url'])
+            ->replaceArgument(1, new Reference('buzz.message_factory.'.$config['message_factory']))
             ->addTag('buzz.browser', array('alias' => $id))
         ;
 

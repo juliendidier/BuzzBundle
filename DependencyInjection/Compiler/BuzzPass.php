@@ -26,11 +26,10 @@ class BuzzPass implements CompilerPassInterface
             $alias = isset($tag[0]['alias'])
                 ? $tag[0]['alias']
                 : $serviceId;
-
             // Flip, because we want tag aliases (= type identifiers) as keys
-            $browsers[$alias] = new Reference($serviceId);
+            $browsers[$alias] = $serviceId;
         }
 
-        $container->getDefinition('buzz')->replaceArgument(0, $browsers);
+        $container->getDefinition('buzz')->replaceArgument(1, $browsers);
     }
 }
