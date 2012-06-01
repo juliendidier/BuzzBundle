@@ -7,29 +7,25 @@
     <parameters>
         <parameter key="buzz.class">Buzz\Bundle\BuzzBundle\Buzz\Buzz</parameter>
         <parameter key="buzz.browser.class">Buzz\Browser</parameter>
+        <parameter key="buzz.browser_manager.class">Buzz\Bundle\BuzzBundle\Buzz\BrowserManager</parameter>
         <parameter key="buzz.client.curl.class">Buzz\Client\Curl</parameter>
         <parameter key="buzz.message_factory.class">Buzz\Bundle\BuzzBundle\Message\Factory</parameter>
-        <parameter key="buzz.browser_factory.class">Buzz\Bundle\BuzzBundle\DependencyInjection\Factory\Browser\BrowserFactory</parameter>
-        <parameter key="buzz.client.class">Buzz\Bundle\BuzzBundle\Buzz\Client\Client</parameter>
     </parameters>
     <services>
+        <service id="buzz.browser_manager" class="%buzz.browser_manager.class%">
+        </service>
         <service id="buzz" class="%buzz.class%">
-            <argument type="service" id="service_container" />
-            <argument type="collection" />
-        </service>
-        <service id="buzz.client.curl" class="%buzz.client.curl.class%">
-        </service>
-        <service id="buzz.browser_factory" class="%buzz.browser_factory.class%">
+            <argument type="service" id="buzz.browser_manager" />
         </service>
         <service id="buzz.browser" class="%buzz.browser.class%" abstract="true">
-            <argument />
-            <argument />
+            <argument /> <!-- ClientInterface -->
+            <argument /> <!-- FactoryInterface -->
+        </service>
+        <service id="buzz.client.curl" class="%buzz.client.curl.class%">
+            <tag name="buzz.client" alias="curl" />
         </service>
         <service id="buzz.message_factory" class="%buzz.message_factory.class%">
             <argument />
-        </service>
-        <service id="buzz.client" class="%buzz.client.class%">
-            <tag name="buzz.client" />
         </service>
     </services>
 </container>

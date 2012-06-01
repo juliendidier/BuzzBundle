@@ -9,6 +9,6 @@ class BuzzBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
-        $container->addCompilerPass(new DependencyInjection\Compiler\BuzzPass());
+        $container->addCompilerPass(new DependencyInjection\Compiler\BrowserPass());
     }
 }

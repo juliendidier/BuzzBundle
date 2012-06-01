@@ -2,19 +2,15 @@
 
 namespace Buzz\Bundle\BuzzBundle\Buzz;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
-use Buzz\Bundle\BuzzBundle\DependencyInjection\Factory\Browser\BrowserFactory;
+use Buzz\Bundle\BuzzBundle\Buzz\BrowserManager;
 use Buzz\Bundle\BuzzBundle\Exception\BuzzException;
 
 class Buzz
 {
-    protected $container;
     protected $browsers;
 
-    public function __construct(ContainerInterface $container, array $browsers = null)
+    public function __construct(BrowserManager $browsers = null)
     {
-        $this->container = $container;
         $this->browsers = $browsers;
     }
 
@@ -29,11 +25,7 @@ class Buzz
      */
     public function getBrowser($name)
     {
-        if (!is_string($name)) {
-            throw new UnexpectedTypeException($name, 'string');
-        }
-
-        return $this->loadBrowser($name);
+        return $this->browsers->get($name);
     }
 
     /**
@@ -45,25 +37,6 @@ class Buzz
      */
     public function hasBrowser($name)
     {
-        return isset($this->browsers[$name]) && $this->container->has($this->browsers[$name]);
+        return $this->browsers->has($name);
     }
-
-    /**
-     * Loads a browser.
-     *
-     * @param string $name The browser name
-     *
-     * @throws BuzzException if the browser is not provided by any registered extension
-     */
-    private function loadBrowser($name)
-    {
-        if (!$this->hasBrowser($name)) {
-            throw new BuzzException(sprintf('Could not load browser "%s"', $name));
-        }
-
-        $serviceId = $this->browsers[$name];
-
-        return $this->container->get($serviceId);
-    }
-
 }
