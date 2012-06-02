@@ -33,7 +33,6 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->children()
                             ->scalarNode('client')->isRequired()->end()
-                            ->scalarNode('host')->isRequired()->end()
                             ->scalarNode('message_factory')->isRequired()->end()
                         ->end()
                     ->end()

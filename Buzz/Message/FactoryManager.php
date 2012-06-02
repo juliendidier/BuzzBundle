@@ -7,21 +7,18 @@ use Buzz\Message\Factory\FactoryInterface;
 class FactoryManager
 {
     protected $factories;
-    protected $configs;
 
     /**
      * Set a factory on the collection.
      *
      * @param string    $name       The name of the factory
      * @param Browser   $factory    The factory instance
-     * @param array     $config     The factory configuration
      *
      * @return Boolean  Whether the factory is supported
      */
-    public function set($name, FactoryInterface $factory, array $config = null)
+    public function set($name, FactoryInterface $factory)
     {
         $this->factories[$name] = $factory;
-        $this->configs[$name]   = $config;
     }
 
     /**
