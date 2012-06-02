@@ -17,29 +17,33 @@ class BuzzExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.xml');
+        $loader->load('buzz.xml');
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $browsers = array();
         foreach ($config['browsers'] as $id => $browser) {
-            $browsers[$id] = $this->createBrowser($id, $browser, $container);
+            $this->createBrowser($id, $browser, $container);
         }
    }
 
    private function createBrowser($id, array $config, ContainerBuilder $container)
    {
-        $provider = 'buzz.browser.'.$id;
+        $browser = 'buzz.browser.'.$id;
+
+        if ($container->hasDefinition($browser)) {
+            return $container->getDefinition($browser);
+        }
+
         $definition = new DefinitionDecorator('buzz.browser');
 
         $container
-            ->setDefinition($provider, $definition)
+            ->setDefinition($browser, $definition)
             ->replaceArgument(0, new Reference('buzz.client.'.$config['client']))
-            ->replaceArgument(1, new Reference('buzz.message_factory.'.$config['message_factory']))
+            ->replaceArgument(1, null)
             ->addTag('buzz.browser', array('alias' => $id))
         ;
 
-        return $provider;
+        return $browser;
    }
 }

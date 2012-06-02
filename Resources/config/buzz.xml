@@ -8,8 +8,9 @@
         <parameter key="buzz.class">Buzz\Bundle\BuzzBundle\Buzz\Buzz</parameter>
         <parameter key="buzz.browser.class">Buzz\Browser</parameter>
         <parameter key="buzz.browser_manager.class">Buzz\Bundle\BuzzBundle\Buzz\BrowserManager</parameter>
+        <parameter key="buzz.message.factory_manager.class">Buzz\Bundle\BuzzBundle\Buzz\Message\FactoryManager</parameter>
+
         <parameter key="buzz.client.curl.class">Buzz\Client\Curl</parameter>
-        <parameter key="buzz.message_factory.class">Buzz\Bundle\BuzzBundle\Message\Factory</parameter>
     </parameters>
     <services>
         <!-- Buzz -->
@@ -17,8 +18,13 @@
             <argument type="service" id="buzz.browser_manager" />
         </service>
 
+        <!-- Message Factory -->
+        <service id="buzz.message.factory_manager" class="%buzz.message.factory_manager.class%">
+        </service>
+
         <!-- Browser -->
         <service id="buzz.browser_manager" class="%buzz.browser_manager.class%">
+            <argument type="service" id="buzz.message.factory_manager" />
         </service>
         <service id="buzz.browser" class="%buzz.browser.class%" abstract="true">
             <argument /> <!-- ClientInterface -->
@@ -28,9 +34,6 @@
         <!-- Clients -->
         <service id="buzz.client.curl" class="%buzz.client.curl.class%">
             <tag name="buzz.client" alias="curl" />
-        </service>
-        <service id="buzz.message_factory" class="%buzz.message_factory.class%" public="false">
-            <argument />
         </service>
     </services>
 </container>

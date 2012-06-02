@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 /**
  * Adds all services with the tags "buzz.browser" as arguments of the
- * "buzz" service
+ * "buzz.browser_manager" service
  *
  * @author Kris Wallsmith <kris@symfony.com>
  */
