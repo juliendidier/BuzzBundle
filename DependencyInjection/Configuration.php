@@ -34,6 +34,7 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->scalarNode('client')->isRequired()->end()
                             ->scalarNode('message_factory')->isRequired()->end()
+                            ->scalarNode('host')->isRequired()->end()
                         ->end()
                     ->end()
                 ->end()

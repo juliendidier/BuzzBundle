@@ -39,8 +39,9 @@ class BuzzExtension extends Extension
 
         $container
             ->setDefinition($browser, $definition)
-            ->replaceArgument(0, new Reference('buzz.client.'.$config['client']))
-            ->replaceArgument(1, null)
+            ->replaceArgument(0, $config['host'])
+            ->replaceArgument(1, new Reference('buzz.client.'.$config['client']))
+            ->replaceArgument(2, null)
             ->addTag('buzz.browser', array('alias' => $id))
         ;
 
