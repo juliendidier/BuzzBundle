@@ -4,14 +4,14 @@ namespace Buzz\Bundle\BuzzBundle\Buzz;
 
 use Buzz\Browser;
 
-use Buzz\Bundle\BuzzBundle\Buzz\Message\FactoryManager;
+use Buzz\Bundle\BuzzBundle\Buzz\Message\FactoryManagerInterface;
 
 class BrowserManager
 {
-    protected $browsers;
-    protected $factories;
+    private $browsers;
+    private $factories;
 
-    public function __construct(FactoryManager $factories)
+    public function __construct(FactoryManagerInterface $factories)
     {
         $this->browser   = array();
         $this->factories = $factories;
@@ -43,11 +43,11 @@ class BrowserManager
     public function get($name = null)
     {
         if (!is_string($name)) {
-            throw new UnexpectedTypeException($name, 'string');
+            throw new \UnexpectedValueException('$name must be a string');
         }
 
         if (!$this->has($name)) {
-            throw new BuzzException(sprintf('Buzz browser with name "%s" not found.', $name));
+            throw new \UnexpectedValueException(sprintf('Buzz browser with name "%s" not found.', $name));
         }
 
         $browser = $this->browsers[$name];
@@ -66,7 +66,7 @@ class BrowserManager
     public function has($name)
     {
         if (!is_string($name)) {
-            throw new UnexpectedTypeException($name, 'string');
+            throw new \UnexpectedValueException('$name must be a string');
         }
 
         return isset($this->browsers[$name]);

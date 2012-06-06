@@ -4,9 +4,35 @@ namespace Buzz\Bundle\BuzzBundle\Buzz\Message;
 
 use Buzz\Message\Factory\FactoryInterface;
 
-class FactoryManager
+use Buzz\Bundle\BuzzBundle\Exception\BuzzException;
+
+class FactoryManager implements FactoryManagerInterface
 {
-    protected $factories;
+    private $factories;
+
+    /**
+     * Returns a factory by name.
+     *
+     * @param string $name The name of the factory
+     *
+     * @return Browser The factory
+     *
+     * @throws BuzzException if the factory can not be retrieved
+     */
+    public function get($name)
+    {
+        if (!is_string($name)) {
+            throw new \UnexpectedValueException('$name must be a string');
+        }
+
+        if (!$this->has($name)) {
+            throw new \UnexpectedValueException(sprintf('Buzz message factory with name "%s" not found.', $name));
+        }
+
+        $factory = $this->factories[$name];
+
+        return $factory;
+    }
 
     /**
      * Set a factory on the collection.
@@ -18,31 +44,11 @@ class FactoryManager
      */
     public function set($name, FactoryInterface $factory)
     {
-        $this->factories[$name] = $factory;
-    }
-
-    /**
-     * Returns a factory by name.
-     *
-     * @param string $name The name of the factory
-     *
-     * @return Browser The factory
-     *
-     * @throws BuzzException if the factory can not be retrieved
-     */
-    public function get($name = null)
-    {
         if (!is_string($name)) {
-            throw new UnexpectedTypeException($name, 'string');
+            throw new \UnexpectedValueException('$name must be a string');
         }
 
-        if (!$this->has($name)) {
-            throw new BuzzException(sprintf('Buzz message factory with name "%s" not found.', $name));
-        }
-
-        $factory = $this->factories[$name];
-
-        return $factory;
+        $this->factories[$name] = $factory;
     }
 
     /**
@@ -55,7 +61,7 @@ class FactoryManager
     public function has($name)
     {
         if (!is_string($name)) {
-            throw new UnexpectedTypeException($name, 'string');
+            throw new \UnexpectedValueException('$name must be a string');
         }
 
         return isset($this->factories[$name]);
