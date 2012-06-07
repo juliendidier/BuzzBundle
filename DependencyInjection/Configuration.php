@@ -17,17 +17,8 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('timeout')->cannotBeEmpty()->end()
                 // @todo
                 // ->scalarNode('debug')->defaultValue('%kernel.debug%')->end()
-                ->arrayNode('clients')
-                    ->useAttributeAsKey('client')
-                    ->prototype('array')
-                        ->children()
-                            ->scalarNode('timeout')->isRequired()->cannotBeEmpty()->end()
-                        ->end()
-                    ->end()
-                ->end()
                 ->arrayNode('browsers')
                     ->useAttributeAsKey('browser')
                     ->prototype('array')

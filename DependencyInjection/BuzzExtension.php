@@ -45,6 +45,6 @@ class BuzzExtension extends Extension
             ->addTag('buzz.browser', array('alias' => $id))
         ;
 
-        return $browser;
+        return $container->getDefinition($browser);
    }
 }
