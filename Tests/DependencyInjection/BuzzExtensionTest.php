@@ -9,7 +9,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testLoad()
     {
         $container = new ContainerBuilder();

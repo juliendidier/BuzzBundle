@@ -7,7 +7,7 @@ use Buzz\Message\RequestInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\Factory\Factory;
 
-use Buzz\Bundle\BuzzBundle\Buzz\Browser;
+use Buzz\Bundle\BuzzBundle\Buzz\Browser\Browser;
 use Buzz\Bundle\BuzzBundle\Buzz\BrowserManager;
 use Buzz\Bundle\BuzzBundle\Buzz\Message\FactoryManager;
 

@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
  * Adds all services with the tags "buzz.browser" as arguments of the
  * "buzz.browser_manager" service
  *
- * @author Kris Wallsmith <kris@symfony.com>
+ * @author Julien DIDIER <julien@jdidier.net>
  */
 class BrowserPass implements CompilerPassInterface
 {

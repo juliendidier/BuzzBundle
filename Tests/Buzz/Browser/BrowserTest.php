@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz\Bundle\BuzzBundle\Tests\Buzz\Browser;
+namespace Buzz\Bundle\BuzzBundle\Tests\Buzz;
 
 use Buzz\Message\Message;
 

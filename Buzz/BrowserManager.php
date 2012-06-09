@@ -8,12 +8,11 @@ use Buzz\Bundle\BuzzBundle\Buzz\Message\FactoryManagerInterface;
 
 class BrowserManager
 {
-    private $browsers;
+    private $browsers  = array();
     private $factories;
 
-    public function __construct(FactoryManagerInterface $factories)
+    public function __construct(FactoryManagerInterface $factories = null)
     {
-        $this->browser   = array();
         $this->factories = $factories;
     }
 
@@ -51,7 +50,9 @@ class BrowserManager
         }
 
         $browser = $this->browsers[$name];
-        $browser->setMessageFactory($this->factories->get($name));
+        if ($this->factories && $this->factories->has($name)) {
+            $browser->setMessageFactory($this->factories->get($name));
+        }
 
         return $browser;
     }

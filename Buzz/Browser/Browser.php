@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz\Bundle\BuzzBundle\Buzz;
+namespace Buzz\Bundle\BuzzBundle\Buzz\Browser;
 
 use Buzz\Browser as BaseBrowser;
 use Buzz\Client\ClientInterface;

@@ -6,7 +6,7 @@
 
     <parameters>
         <parameter key="buzz.class">Buzz\Bundle\BuzzBundle\Buzz\Buzz</parameter>
-        <parameter key="buzz.browser.class">Buzz\Bundle\BuzzBundle\Buzz\Browser</parameter>
+        <parameter key="buzz.browser.class">Buzz\Bundle\BuzzBundle\Buzz\Browser\Browser</parameter>
         <parameter key="buzz.browser_manager.class">Buzz\Bundle\BuzzBundle\Buzz\BrowserManager</parameter>
         <parameter key="buzz.message.factory_manager.class">Buzz\Bundle\BuzzBundle\Buzz\Message\FactoryManager</parameter>
 
