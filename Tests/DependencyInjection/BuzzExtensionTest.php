@@ -13,18 +13,17 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $container = new ContainerBuilder();
         $extension = new BuzzExtension();
-        $extension->load($this->getConfig(), $container);
+        $configs = $extension->load($this->getConfig(), $container);
 
         $this->assertTrue($container->has('buzz.browser.foo'));
         $this->assertTrue($container->has('buzz.browser.bar'));
 
+        $this->assertTrue($container->has('buzz.browser.foo'));
         $browser = $container->getDefinition('buzz.browser.foo');
-        $this->assertEquals('buzz.browser', $browser->getParent());
-        $this->assertEquals('my://foohost', $browser->getArgument(0));
-        $client = new Reference('buzz.client.curl');
-        $this->assertEquals($client, $browser->getArgument(1));
-        $this->assertNull($browser->getArgument(2));
 
+        $client = new Reference('buzz.client.curl');
+        $this->assertEquals($client, $browser->getArgument(0));
+        $this->assertNull($browser->getArgument(1));
     }
 
     public function testLoadWithDefinedBrowser()
@@ -34,13 +33,10 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
         $definition = new DefinitionDecorator('buzz.browser');
         $container
             ->setDefinition('buzz.browser.bar', $definition)
-            ->replaceArgument(0, 'my://otherfoohost')
         ;
         $extension->load($this->getConfig(), $container);
 
-        $browser = $container->getDefinition('buzz.browser.bar');
         $this->assertTrue($container->has('buzz.browser.bar'));
-        $this->assertEquals('my://otherfoohost', $browser->getArgument(0));
     }
 
     private function getConfig()

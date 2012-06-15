@@ -20,31 +20,76 @@ class BuzzExtension extends Extension
         $loader->load('buzz.xml');
 
         $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
+        $configs = $this->processConfiguration($configuration, $configs);
+        $configs = $this->loadListeners($configs, $container);
+        $configs = $this->loadBrowsers($configs, $container);
 
-        foreach ($config['browsers'] as $id => $browser) {
-            $this->createBrowser($id, $browser, $container);
+        $container->setParameter('buzz', $configs);
+
+        return $configs;
+    }
+
+    private function loadListeners(array $configs, ContainerBuilder $container)
+    {
+        if (!isset($configs['listeners']) || empty($configs['listeners'])) {
+            return $configs;
         }
-   }
 
-   private function createBrowser($id, array $config, ContainerBuilder $container)
-   {
+        $listeners = array();
+        foreach ($configs['listeners'] as $key => $listener) {
+            $listeners[$key] = $listener['id'];
+        }
+
+        return array_replace($configs, array('listeners' => $listeners));
+    }
+
+    private function loadBrowsers(array $configs, ContainerBuilder $container)
+    {
+        if (!isset($configs['browsers']) || empty($configs['browsers'])) {
+            return $configs;
+        }
+
+        foreach ($configs['browsers'] as $id => $config) {
+            $this->createBrowser($id, $configs, $container);
+            $configs = $this->configureBrowser($id, $configs, $container);
+         }
+
+        return $configs;
+    }
+
+    private function createBrowser($id, array $configs, ContainerBuilder $container)
+    {
         $browser = 'buzz.browser.'.$id;
+        $config = $configs['browsers'][$id];
 
-        if ($container->hasDefinition($browser)) {
-            return $container->getDefinition($browser);
-        }
-
-        $definition = new DefinitionDecorator('buzz.browser');
-
-        $container
-            ->setDefinition($browser, $definition)
-            ->replaceArgument(0, $config['host'])
-            ->replaceArgument(1, new Reference('buzz.client.'.$config['client']))
-            ->replaceArgument(2, null)
-            ->addTag('buzz.browser', array('alias' => $id))
+        $container->register($browser, 'Buzz\Browser')
+            ->setArguments(array(null, null))
         ;
 
-        return $container->getDefinition($browser);
-   }
+        return $configs;
+    }
+
+    private function configureBrowser($id, array $configs, ContainerBuilder $container)
+    {
+        $config = $configs['browsers'][$id];
+        $browser = 'buzz.browser.'.$id;
+        $browser = $container->getDefinition($browser)
+            ->replaceArgument(0, new Reference('buzz.client.'.$config['client']))
+            ->replaceArgument(1, null)
+        ;
+
+        if (!empty($config['host'])) {
+            $listener = 'buzz.listener.host_'.$id;
+
+            $container
+                ->register($listener, 'Buzz\Bundle\BuzzBundle\Buzz\Listener\HostListener')
+                ->addArgument($config['host'])
+            ;
+
+            $configs['listeners']['host_'.$id] = $listener;
+            $configs['browsers'][$id]['listeners'][] = 'host_'.$id;
+        }
+
+        return $configs;
+    }
 }

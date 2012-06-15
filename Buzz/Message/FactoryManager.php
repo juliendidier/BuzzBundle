@@ -4,8 +4,6 @@ namespace Buzz\Bundle\BuzzBundle\Buzz\Message;
 
 use Buzz\Message\Factory\FactoryInterface;
 
-use Buzz\Bundle\BuzzBundle\Exception\BuzzException;
-
 class FactoryManager implements FactoryManagerInterface
 {
     private $factories;
@@ -17,7 +15,7 @@ class FactoryManager implements FactoryManagerInterface
      *
      * @return Browser The factory
      *
-     * @throws BuzzException if the factory can not be retrieved
+     * @throws UnexpectedValueException if the factory can not be retrieved
      */
     public function get($name)
     {
@@ -41,6 +39,8 @@ class FactoryManager implements FactoryManagerInterface
      * @param Browser   $factory    The factory instance
      *
      * @return Boolean  Whether the factory is supported
+     *
+     * @throws UnexpectedValueException if the factory can not be retrieved
      */
     public function set($name, FactoryInterface $factory)
     {
@@ -57,6 +57,8 @@ class FactoryManager implements FactoryManagerInterface
      * @param string $name The name of the factory
      *
      * @return Boolean Whether the factory is supported
+     *
+     * @throws UnexpectedValueException if the factory can not be retrieved
      */
     public function has($name)
     {

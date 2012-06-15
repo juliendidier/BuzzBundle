@@ -21,13 +21,27 @@ class BrowserPass implements CompilerPassInterface
         }
 
         $bm = $container->getDefinition('buzz.browser_manager');
+        $configs = $container->getParameter('buzz');
 
-        foreach ($container->findTaggedServiceIds('buzz.browser') as $id => $attributes) {
-            foreach ($attributes as $attr) {
-                if (isset($attr['alias'])) {
-                    $bm->addMethodCall('set', array($attr['alias'], new Reference($id)));
+        foreach ($container->findTaggedServiceIds('buzz.browser') as $serviceId => $tag) {
+            $alias = isset($tag[0]['alias'])
+                ? $tag[0]['alias']
+                : $serviceId;
+            if ($container->hasDefinition('buzz.browser.'.$alias)) {
+                $browser = $container->getDefinition('buzz.browser.'.$alias);
+                $container->getDefinition($serviceId)
+                    ->replaceArgument(0, $browser->getArgument(0))
+                    ->replaceArgument(1, $browser->getArgument(1))
+                ;
+
+                foreach ($configs['browsers'][$alias]['listeners'] as $listener) {
+                    $listener = new Reference($configs['listeners'][$listener]);
+                    $container->getDefinition($serviceId)
+                        ->addMethodCall('addListener', array($listener));
                 }
             }
+
+            $bm->addMethodCall('set', array($alias, new Reference($serviceId)));
         }
     }
 }

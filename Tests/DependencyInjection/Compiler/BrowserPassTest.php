@@ -6,6 +6,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
+use Buzz\Bundle\BuzzBundle\DependencyInjection\BuzzExtension;
 use Buzz\Bundle\BuzzBundle\DependencyInjection\Compiler\BrowserPass;
 
 class BrowserPassTest extends \PHPUnit_Framework_TestCase
@@ -21,14 +22,15 @@ class BrowserPassTest extends \PHPUnit_Framework_TestCase
 
         $container = $this->getContainer();
         $def = $container
-            ->register('foo')
+            ->register('buzz.browser.foo')
             ->setClass('Buzz\Browser')
-            ->addTag('buzz.browser', array('alias' => 'bar'))
+            ->setArguments(array(null, null))
+            ->addTag('buzz.browser', array('alias' => 'foo'))
         ;
 
         $browserPass->process($container);
 
-        $this->assertTrue($container->get('buzz.browser_manager')->has('bar'));
+        $this->assertTrue($container->get('buzz.browser_manager')->has('foo'));
     }
 
     protected function getContainer()
@@ -36,7 +38,27 @@ class BrowserPassTest extends \PHPUnit_Framework_TestCase
         $container = new ContainerBuilder();
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config'));
         $loader->load('buzz.xml');
+        $extension = new BuzzExtension();
+        $extension->load($this->getConfig(), $container);
 
         return $container;
+    }
+
+    private function getConfig()
+    {
+        return array(
+            array('browsers' => array(
+                'foo' => array(
+                    'client' => 'curl',
+                    'message_factory' => 'foo',
+                    'host' => 'my://foohost',
+                ),
+                'bar' => array(
+                    'client' => 'curl',
+                    'message_factory' => 'bar',
+                    'host' => 'my://barhost',
+                )
+            )),
+        );
     }
 }

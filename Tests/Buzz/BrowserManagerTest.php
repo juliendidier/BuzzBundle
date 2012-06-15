@@ -2,12 +2,12 @@
 
 namespace Buzz\Bundle\BuzzBundle\Tests\Buzz;
 
+use Buzz\Browser;
 use Buzz\Client\ClientInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\Factory\Factory;
 
-use Buzz\Bundle\BuzzBundle\Buzz\Browser\Browser;
 use Buzz\Bundle\BuzzBundle\Buzz\BrowserManager;
 use Buzz\Bundle\BuzzBundle\Buzz\Message\FactoryManager;
 
