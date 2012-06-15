@@ -13,17 +13,19 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $container = new ContainerBuilder();
         $extension = new BuzzExtension();
+
         $configs = $extension->load($this->getConfig(), $container);
+        $this->assertEquals(array('host' => 'foo.bar', 'host_foo' => 'buzz.listener.host_foo'), $configs['listeners']);
 
-        $this->assertTrue($container->has('buzz.browser.foo'));
-        $this->assertTrue($container->has('buzz.browser.bar'));
-
-        $this->assertTrue($container->has('buzz.browser.foo'));
+        $this->assertTrue($container->hasDefinition('buzz.browser.foo'));
         $browser = $container->getDefinition('buzz.browser.foo');
-
         $client = new Reference('buzz.client.curl');
         $this->assertEquals($client, $browser->getArgument(0));
         $this->assertNull($browser->getArgument(1));
+
+        $this->assertTrue($container->hasDefinition('buzz.listener.host_foo'));
+        $listener = $container->getDefinition('buzz.listener.host_foo');
+        $this->assertEquals('my://foo', $listener->getArgument(0));
     }
 
     public function testLoadWithDefinedBrowser()
@@ -36,24 +38,39 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
         ;
         $extension->load($this->getConfig(), $container);
 
-        $this->assertTrue($container->has('buzz.browser.bar'));
+        $this->assertTrue($container->hasDefinition('buzz.browser.bar'));
+    }
+
+    private function getBadConfig()
+    {
+        return array(
+            array(
+                'listeners' => array(
+                    'host' => 'host'
+                )
+            )
+        );
     }
 
     private function getConfig()
     {
         return array(
-            array('browsers' => array(
-                'foo' => array(
-                    'client' => 'curl',
-                    'message_factory' => 'foo',
-                    'host' => 'my://foohost',
+            array(
+                'listeners' => array(
+                    'host' => 'foo.bar'
                 ),
-                'bar' => array(
-                    'client' => 'curl',
-                    'message_factory' => 'bar',
-                    'host' => 'my://barhost',
+                'browsers' =>
+                    array(
+                    'foo' => array(
+                        'client' => 'curl',
+                        'message_factory' => 'foo',
+                        'host' => 'my://foo',
+                        'listeners' => array(
+                            'host',
+                        )
+                    )
                 )
-            )),
+            )
         );
     }
 }

@@ -68,4 +68,14 @@ class FactoryManager implements FactoryManagerInterface
 
         return isset($this->factories[$name]);
     }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->factories);
+    }
+
+    public function count()
+    {
+        return count($this->factories);
+    }
 }

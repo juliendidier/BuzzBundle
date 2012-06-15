@@ -15,14 +15,13 @@ class BrowserPassTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerBuilder');
         $browserPass = new BrowserPass();
-        $browser = $this->getMock('Buzz\Browser');
 
         $return = $browserPass->process($container);
         $this->assertEquals(null, $return, 'No buzz.browser_manager registered');
 
         $container = $this->getContainer();
         $def = $container
-            ->register('buzz.browser.foo')
+            ->register('buzz.browser.my_foo')
             ->setClass('Buzz\Browser')
             ->setArguments(array(null, null))
             ->addTag('buzz.browser', array('alias' => 'foo'))
@@ -31,6 +30,12 @@ class BrowserPassTest extends \PHPUnit_Framework_TestCase
         $browserPass->process($container);
 
         $this->assertTrue($container->get('buzz.browser_manager')->has('foo'));
+        $browser = $container->get('buzz.browser_manager')->get('foo');
+        $this->assertEquals($browser, $container->get('buzz.browser_manager')->get('foo'));
+        $this->assertEquals($browser->getListener(), $container->get('buzz.listener.host_foo'));
+
+        $listener = $container->getDefinition('buzz.listener.host_foo');
+        $this->assertEquals('my://foo', $listener->getArgument(0));
     }
 
     protected function getContainer()
@@ -51,13 +56,8 @@ class BrowserPassTest extends \PHPUnit_Framework_TestCase
                 'foo' => array(
                     'client' => 'curl',
                     'message_factory' => 'foo',
-                    'host' => 'my://foohost',
+                    'host' => 'my://foo',
                 ),
-                'bar' => array(
-                    'client' => 'curl',
-                    'message_factory' => 'bar',
-                    'host' => 'my://barhost',
-                )
             )),
         );
     }

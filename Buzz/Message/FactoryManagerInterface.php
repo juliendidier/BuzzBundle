@@ -4,7 +4,7 @@ namespace Buzz\Bundle\BuzzBundle\Buzz\Message;
 
 use Buzz\Message\Factory\FactoryInterface;
 
-interface FactoryManagerInterface
+interface FactoryManagerInterface extends \Countable, \IteratorAggregate
 {
     function get($name);
     function set($name, FactoryInterface $factory);

@@ -21,6 +21,7 @@ class BuzzExtension extends Extension
 
         $configuration = new Configuration();
         $configs = $this->processConfiguration($configuration, $configs);
+
         $configs = $this->loadListeners($configs, $container);
         $configs = $this->loadBrowsers($configs, $container);
 
@@ -31,10 +32,6 @@ class BuzzExtension extends Extension
 
     private function loadListeners(array $configs, ContainerBuilder $container)
     {
-        if (!isset($configs['listeners']) || empty($configs['listeners'])) {
-            return $configs;
-        }
-
         $listeners = array();
         foreach ($configs['listeners'] as $key => $listener) {
             $listeners[$key] = $listener['id'];
@@ -45,10 +42,6 @@ class BuzzExtension extends Extension
 
     private function loadBrowsers(array $configs, ContainerBuilder $container)
     {
-        if (!isset($configs['browsers']) || empty($configs['browsers'])) {
-            return $configs;
-        }
-
         foreach ($configs['browsers'] as $id => $config) {
             $this->createBrowser($id, $configs, $container);
             $configs = $this->configureBrowser($id, $configs, $container);

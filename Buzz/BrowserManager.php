@@ -6,7 +6,7 @@ use Buzz\Browser;
 
 use Buzz\Bundle\BuzzBundle\Buzz\Message\FactoryManagerInterface;
 
-class BrowserManager
+class BrowserManager implements \Countable, \IteratorAggregate
 {
     private $browsers  = array();
     private $factories;
@@ -71,5 +71,15 @@ class BrowserManager
         }
 
         return isset($this->browsers[$name]);
+    }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->browsers);
+    }
+
+    public function count()
+    {
+        return count($this->browsers);
     }
 }

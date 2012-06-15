@@ -16,13 +16,6 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root("buzz");
 
-        $rootNode
-            ->children()
-                // @todo
-                // ->scalarNode('debug')->defaultValue('%kernel.debug%')->end()
-            ->end()
-        ;
-
         $this->addListenerSection($rootNode);
         $this->addBrowserSection($rootNode);
 
@@ -58,8 +51,8 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('key')
                     ->prototype('array')
                         ->beforeNormalization()
-                            ->ifTrue(function($v){ return is_string($v) && 0 === strpos($v, '@'); })
-                            ->then(function($v){ return array('id' => substr($v, 1)); })
+                            ->ifTrue(function($v){ return is_string($v); })
+                            ->then(function($v){ return array('id' => $v); })
                         ->end()
                         ->children()
                             ->scalarNode('id')->end()
