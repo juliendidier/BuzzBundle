@@ -40,7 +40,7 @@ class BuzzDataCollectorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('buzz', $c->getName());
         $this->assertSame(11, $c->getDuration());
         $this->assertSame(2, $c->getNbEntries());
-        $this->assertEquals($data, $c->getData());
+        $this->assertEquals(array_reverse($data), $c->getData());
     }
 
     public function getTestEntry()

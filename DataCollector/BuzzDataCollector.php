@@ -48,7 +48,7 @@ class BuzzDataCollector extends DataCollector
 
     public function getData()
     {
-        return array_reverse($this->data);
+        return $this->data;
     }
 
     public function getName()
