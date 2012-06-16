@@ -21,27 +21,29 @@ class BrowserPass implements CompilerPassInterface
         }
 
         $bm = $container->getDefinition('buzz.browser_manager');
-        $configs = $container->getParameter('buzz');
+        $config = $container->getParameter('buzz');
 
         foreach ($container->findTaggedServiceIds('buzz.browser') as $serviceId => $tag) {
-            $alias = isset($tag[0]['alias'])
+            $name = isset($tag[0]['alias'])
                 ? $tag[0]['alias']
                 : $serviceId;
-            if ($container->hasDefinition('buzz.browser.'.$alias)) {
-                $browser = $container->getDefinition('buzz.browser.'.$alias);
-                $container->getDefinition($serviceId)
-                    ->replaceArgument(0, $browser->getArgument(0))
-                    ->replaceArgument(1, $browser->getArgument(1))
-                ;
 
-                foreach ($configs['browsers'][$alias]['listeners'] as $listener) {
-                    $listener = new Reference($configs['listeners'][$listener]);
-                    $container->getDefinition($serviceId)
-                        ->addMethodCall('addListener', array($listener));
-                }
+
+            $baseDefinition = $container->getDefinition('buzz.browser.'.$name);
+            $definition = $container->getDefinition($serviceId);
+            $clientId = 'buzz.client.'.$config['browsers'][$name]['client'];
+
+            $baseDefinition->replaceArgument(0, new Reference($clientId));
+
+            $arguments = $baseDefinition->getArguments();
+            foreach ($arguments as $index => $argument) {
+                $definition->replaceArgument($index, $argument);
             }
 
-            $bm->addMethodCall('set', array($alias, new Reference($serviceId)));
+            $calls = $baseDefinition->getMethodCalls();
+            $definition->setMethodCalls(array_merge($definition->getMethodCalls(), $calls));
+
+            $bm->addMethodCall('set', array($name, new Reference($serviceId)));
         }
     }
 }

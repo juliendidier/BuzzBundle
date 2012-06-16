@@ -26,13 +26,14 @@ class Configuration implements ConfigurationInterface
     {
         $rootNode
             ->children()
+                ->booleanNode('profiler')->defaultValue(false)->end()
                 ->arrayNode('browsers')
                     ->useAttributeAsKey('browser')
                     ->prototype('array')
                         ->children()
-                            ->scalarNode('client')->isRequired()->end()
-                            ->scalarNode('message_factory')->isRequired()->end()
-                            ->scalarNode('host')->isRequired()->end()
+                            ->scalarNode('client')->end()
+                            ->scalarNode('message_factory')->end()
+                            ->scalarNode('host')->end()
                             ->arrayNode('listeners')
                                 ->prototype('scalar')->end()
                             ->end()

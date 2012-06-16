@@ -8,8 +8,9 @@
         <parameter key="buzz.class">Buzz\Bundle\BuzzBundle\Buzz\Buzz</parameter>
         <parameter key="buzz.browser_manager.class">Buzz\Bundle\BuzzBundle\Buzz\BrowserManager</parameter>
         <parameter key="buzz.message.factory_manager.class">Buzz\Bundle\BuzzBundle\Buzz\Message\FactoryManager</parameter>
-
         <parameter key="buzz.client.curl.class">Buzz\Client\Curl</parameter>
+        <parameter key="buzz.listener.history.class">Buzz\Listener\HistoryListener</parameter>
+        <parameter key="buzz.listener.history_journal.class">Buzz\Listener\History\Journal</parameter>
     </parameters>
     <services>
         <!-- Buzz -->
@@ -29,6 +30,13 @@
         <!-- Clients -->
         <service id="buzz.client.curl" class="%buzz.client.curl.class%">
             <tag name="buzz.client" alias="curl" />
+        </service>
+
+        <!-- Listeners -->
+        <service id="buzz.listener.history" class="%buzz.listener.history.class%">
+            <argument type="service" id="buzz.listener.history_journal" />
+        </service>
+        <service id="buzz.listener.history_journal" class="%buzz.listener.history_journal.class%">
         </service>
     </services>
 </container>

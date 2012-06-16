@@ -19,5 +19,9 @@ class HostListenerTest extends \PHPUnit_Framework_TestCase
         $listener->preSend($request);
 
         $response = $this->getMock('Buzz\Message\MessageInterface');
+        $listener->postSend($cloneRequest = clone $request, $cloneResponse = clone $response);
+
+        $this->assertEquals($request, $cloneRequest, 'postSend does nothing on the request');
+        $this->assertEquals($response, $cloneResponse, 'postSend does nothing on the response');
     }
 }

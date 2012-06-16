@@ -20,69 +20,73 @@ class BuzzExtension extends Extension
         $loader->load('buzz.xml');
 
         $configuration = new Configuration();
-        $configs = $this->processConfiguration($configuration, $configs);
+        $config = $this->processConfiguration($configuration, $configs);
 
-        $configs = $this->loadListeners($configs, $container);
-        $configs = $this->loadBrowsers($configs, $container);
+        $this->loadListenersSection($config['listeners'], $container);
+        $this->loadBrowsersSection($config['browsers'], $container);
 
-        $container->setParameter('buzz', $configs);
-
-        return $configs;
-    }
-
-    private function loadListeners(array $configs, ContainerBuilder $container)
-    {
-        $listeners = array();
-        foreach ($configs['listeners'] as $key => $listener) {
-            $listeners[$key] = $listener['id'];
+        if ($config['profiler']) {
+            $this->loadProfiler(array_keys($config['browsers']), $container);
         }
 
-        return array_replace($configs, array('listeners' => $listeners));
+        $container->setParameter('buzz', $config);
+
+        return $config;
     }
 
-    private function loadBrowsers(array $configs, ContainerBuilder $container)
+    private function loadListenersSection(array $config, ContainerBuilder $container)
     {
-        foreach ($configs['browsers'] as $id => $config) {
-            $this->createBrowser($id, $configs, $container);
-            $configs = $this->configureBrowser($id, $configs, $container);
+        $listeners = array();
+        foreach ($config as $key => $listener) {
+            $listeners[$key] = $listener['id'];
+        }
+    }
+
+    private function loadBrowsersSection(array $config, ContainerBuilder $container)
+    {
+        foreach ($config as $name => $browserConfig) {
+            $this->createBrowser($name, $browserConfig, $container);
          }
-
-        return $configs;
     }
 
-    private function createBrowser($id, array $configs, ContainerBuilder $container)
+    private function createBrowser($name, array $config, ContainerBuilder $container)
     {
-        $browser = 'buzz.browser.'.$id;
-        $config = $configs['browsers'][$id];
+        $browser = 'buzz.browser.'.$name;
 
         $container->register($browser, 'Buzz\Browser')
             ->setArguments(array(null, null))
         ;
 
-        return $configs;
-    }
-
-    private function configureBrowser($id, array $configs, ContainerBuilder $container)
-    {
-        $config = $configs['browsers'][$id];
-        $browser = 'buzz.browser.'.$id;
-        $browser = $container->getDefinition($browser)
-            ->replaceArgument(0, new Reference('buzz.client.'.$config['client']))
-            ->replaceArgument(1, null)
-        ;
+        $browser = 'buzz.browser.'.$name;
+        $browser = $container->getDefinition($browser);
+        if (isset($config['client']) && !empty($config['client'])) {
+            $browser
+                ->replaceArgument(0, new Reference('buzz.client.'.$config['client']))
+                ->replaceArgument(1, null)
+            ;
+        }
 
         if (!empty($config['host'])) {
-            $listener = 'buzz.listener.host_'.$id;
+            $listener = 'buzz.listener.host_'.$name;
 
             $container
                 ->register($listener, 'Buzz\Bundle\BuzzBundle\Buzz\Listener\HostListener')
                 ->addArgument($config['host'])
             ;
-
-            $configs['listeners']['host_'.$id] = $listener;
-            $configs['browsers'][$id]['listeners'][] = 'host_'.$id;
+            $browser->addMethodCall('addListener', array(new Reference($listener)));
         }
+    }
 
-        return $configs;
+    private function loadProfiler(array $browserNames, ContainerBuilder $container)
+    {
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('datacollector.xml');
+
+        foreach($browserNames as $name) {
+            $container->getDefinition('buzz.browser.'.$name)
+                ->addMethodCall('addListener', array(new Reference('buzz.listener.history')))
+            ;
+
+        }
     }
 }

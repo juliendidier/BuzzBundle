@@ -1,0 +1,96 @@
+{% extends 'WebProfilerBundle:Profiler:layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        <img width="23" height="28" alt="Buzz" style="border-width: 0; vertical-align: middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAcCAYAAACK7SRjAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAcNJREFUeNpi/P//PwOtABMDDcGo4fQ3nFFOTg5DUFJS8gkrK6vEly9fAt+9e7cZiz4uIJbCIv77IRDgdLmYmNgRDg4OaWYg4OLiWikoKKiGxRAHIL6JBe+Xl5dnxmq4qKjoDm5ubmsYH+h6TqAFp4EWiKD7GKoXHTNjDXMREZEeHh4ed3QnsrGx8bGzsx9CE8aV8/5hGC4kJBQJdHERrojh5OTUBPpqC8mpBWiwF9DFi5mYmBjxKQSq8Qb6bh5JhgM1bQRFHjGKeXl5E4GOCQIyvxKjnuXnz59noRHxH5hKTLD54MePH8/+/v17D8j8A8Rv8Rj+D5gS/2JN57Kysr9YWFhY0XV8+vQp7u3bt0eBzFhQFACxBhD7YzH8ExDPh0bsPxaYKDC5sUGTGDYgAMpbQNxAICT4gDgfyj5GbPYXAmKQy7OJVA/KUGGkli3TgLiZgJqXQBwIDPun5BRcdUC8HIfcdyCOBBp8HSP7MzLiTOroEmnQYEIH5UCD92MtW/7jrlD/ovG/gLwOxBeQxJqABk9GSecwxvv3738BXe4ATWrIZQQT0M6LWCx8DQoCIN4JxMeBBtdjeHe09h81nGgAEGAA59t54ZXuWKEAAAAASUVORK5CYII=" />
+        {% if collector.nbEntries %}
+            <span class="sf-toolbar-status">{{ collector.nbEntries }}</span>
+        {% endif %}
+    {% endset %}
+    {% set text %}
+        <span>
+            {% set count = collector.nbEntries %}
+            <div class="sf-toolbar-info-piece">
+                <b>Total entries</b>
+                <span>
+                        {% transchoice count %}
+                        {0} No entries|{1} 1 entry|]1,Inf] %count% entries
+                    {% endtranschoice %}
+                </span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Duration</b>
+                <span class="sf-toolbar-status sf-toolbar-status-green">{{ "%.0f"|format(collector.duration * 1000) }} ms</span>
+            </div>
+        </span>
+    {% endset %}
+    {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': profiler_url } %}
+{% endblock %}
+
+{% block menu %}
+<span class="label">
+    <span class="icon">
+        <img alt="Configuration" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAcCAYAAACK7SRjAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAcNJREFUeNpi/P//PwOtABMDDcGo4fQ3nFFOTg5DUFJS8gkrK6vEly9fAt+9e7cZiz4uIJbCIv77IRDgdLmYmNgRDg4OaWYg4OLiWikoKKiGxRAHIL6JBe+Xl5dnxmq4qKjoDm5ubmsYH+h6TqAFp4EWiKD7GKoXHTNjDXMREZEeHh4ed3QnsrGx8bGzsx9CE8aV8/5hGC4kJBQJdHERrojh5OTUBPpqC8mpBWiwF9DFi5mYmBjxKQSq8Qb6bh5JhgM1bQRFHjGKeXl5E4GOCQIyvxKjnuXnz59noRHxH5hKTLD54MePH8/+/v17D8j8A8Rv8Rj+D5gS/2JN57Kysr9YWFhY0XV8+vQp7u3bt0eBzFhQFACxBhD7YzH8ExDPh0bsPxaYKDC5sUGTGDYgAMpbQNxAICT4gDgfyj5GbPYXAmKQy7OJVA/KUGGkli3TgLiZgJqXQBwIDPun5BRcdUC8HIfcdyCOBBp8HSP7MzLiTOroEmnQYEIH5UCD92MtW/7jrlD/ovG/gLwOxBeQxJqABk9GSecwxvv3738BXe4ATWrIZQQT0M6LWCx8DQoCIN4JxMeBBtdjeHe09h81nGgAEGAA59t54ZXuWKEAAAAASUVORK5CYII=" />
+</span>
+    <strong>Buzz</strong>
+    <span class="count">
+        <span>{{ collector.nbEntries }}</span>
+        <span>{{ "%.0f"|format(collector.duration * 1000) }} ms</span>
+    </span>
+</span>
+{% endblock %}
+
+{% block panel %}
+    {% for entry in collector.getData %}
+        <h2>#{{ loop.index }}</h2>
+        <table>
+            <tr>
+                <th>Method</th>
+                <td>{{ entry.request.method }}</td>
+            </tr>
+            <tr>
+                <th>Url</th>
+                <td>{{ entry.request.url }}</td>
+            </tr>
+            <tr>
+                <th>Protocol version</th>
+                <td>{{ entry.request.protocolVersion }}</td>
+            </tr>
+            <tr>
+                <th>Is secure</th>
+                <td>
+                    {{ entry.request.isSecure ? 'true' : 'false' }}
+                </td>
+            </tr>
+            <tr>
+                <th>Duration</th>
+                <td>{{ '%.0f'|format(entry.duration * 1000) }} ms</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <th rowspan="2">Request</th>
+                <th>Headers</th>
+                <td>{{ entry.request.headers|join("<br />")|raw }}</td>
+            </tr>
+            <tr>
+                <th>Content</th>
+                <td>
+                    {{ entry.request.content|raw }}
+                </td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <th rowspan="2">Response</th>
+                <th>Headers</th>
+                <td>{{ entry.response.headers|join("<br />")|raw }}</td>
+            </tr>
+            <tr>
+                <th>Content</th>
+                <td>{{ entry.response.content }}</td>
+            </tr>
+        </table>
+    {% endfor %}
+
+{% endblock %}

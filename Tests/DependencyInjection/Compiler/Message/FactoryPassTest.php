@@ -14,7 +14,6 @@ class FactoryPassTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerBuilder');
         $factoryPass = new FactoryPass();
-        $factory = $this->getMock('Buzz\Bundle\BuzzBundle\Buzz\Message\FactoryManager');
 
         $return = $factoryPass->process($container);
         $this->assertEquals(null, $return, 'No buzz.message.factory_manager registered');

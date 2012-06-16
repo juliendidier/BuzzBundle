@@ -59,4 +59,14 @@ class FactoryManagerTest extends \PHPUnit_Framework_TestCase
             array('has'),
         );
     }
+
+    public function testGetIterator()
+    {
+        $fm = new FactoryManager();
+        $fm->set('foo', $this->getMock('Buzz\Message\Factory\FactoryInterface'));
+        $fm->set('bar', $this->getMock('Buzz\Message\Factory\FactoryInterface'));
+
+        $this->assertTrue($fm->getIterator() instanceof \ArrayIterator);
+        $this->assertEquals(2, count($fm));
+    }
 }

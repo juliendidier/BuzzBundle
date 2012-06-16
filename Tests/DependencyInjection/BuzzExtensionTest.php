@@ -15,7 +15,7 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
         $extension = new BuzzExtension();
 
         $configs = $extension->load($this->getConfig(), $container);
-        $this->assertEquals(array('host' => 'foo.bar', 'host_foo' => 'buzz.listener.host_foo'), $configs['listeners']);
+        $this->assertEquals(array('host' => array('id' => 'foo.bar')), $configs['listeners']);
 
         $this->assertTrue($container->hasDefinition('buzz.browser.foo'));
         $browser = $container->getDefinition('buzz.browser.foo');
@@ -41,15 +41,27 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($container->hasDefinition('buzz.browser.bar'));
     }
 
-    private function getBadConfig()
+    public function testProfilerConfig()
     {
-        return array(
-            array(
-                'listeners' => array(
-                    'host' => 'host'
-                )
-            )
-        );
+        $container = new ContainerBuilder();
+        $extension = new BuzzExtension();
+
+        $configs = $extension->load($this->getProfilerConfig(), $container);
+
+        $this->assertTrue($container->hasDefinition('buzz.data_collector'));
+        $this->assertTrue($container->hasDefinition('buzz.listener.history'));
+        $this->assertTrue($container->hasDefinition('buzz.listener.history_journal'));
+        $collector = $container->getDefinition('buzz.data_collector');
+        $history = $container->getDefinition('buzz.listener.history');
+        $joural = $container->getDefinition('buzz.listener.history_journal');
+
+        $this->assertEquals(new Reference('buzz.listener.history'), $collector->getArgument(0));
+        $this->assertEquals(new Reference('buzz.listener.history_journal'), $history->getArgument(0));
+
+        $browser = $container->getDefinition('buzz.browser.foo');
+        $this->assertTrue($browser->hasMethodCall('addListener'));
+        $calls = $browser->getMethodCalls();
+        $this->assertEquals(new Reference('buzz.listener.history'), $calls[0][1][0]);
     }
 
     private function getConfig()
@@ -59,8 +71,7 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
                 'listeners' => array(
                     'host' => 'foo.bar'
                 ),
-                'browsers' =>
-                    array(
+                'browsers' => array(
                     'foo' => array(
                         'client' => 'curl',
                         'message_factory' => 'foo',
@@ -69,6 +80,18 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
                             'host',
                         )
                     )
+                )
+            )
+        );
+    }
+
+    private function getProfilerConfig()
+    {
+        return array(
+            array(
+                'profiler' =>  true,
+                'browsers' => array(
+                    'foo' => array()
                 )
             )
         );

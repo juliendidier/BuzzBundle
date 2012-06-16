@@ -60,6 +60,16 @@ class BrowserManagerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+
+    public function testGetIterator()
+    {
+        $bm = new BrowserManager();
+        $bm->set('foo', $this->getMock('Buzz\Browser'));
+        $bm->set('bar', $this->getMock('Buzz\Browser'));
+
+        $this->assertTrue($bm->getIterator() instanceof \ArrayIterator);
+        $this->assertEquals(2, count($bm));
+    }
 }
 
 class FactoryManagerMock extends FactoryManager
