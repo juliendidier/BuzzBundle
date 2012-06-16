@@ -28,6 +28,22 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('my://foo', $listener->getArgument(0));
     }
 
+    public function testLoadClients()
+    {
+        $container = new ContainerBuilder();
+        $extension = new BuzzExtension();
+        $configs = $extension->load(array(), $container);
+
+        $array = function($name) { return array(array('alias' => 'curl')); };
+
+        $this->assertTrue($container->hasDefinition('buzz.client.curl'));
+        $this->assertEquals($array('curl'), $container->getDefinition('buzz.client.curl')->getTag('buzz.client'));
+        $this->assertTrue($container->hasDefinition('buzz.client.multi_curl'));
+        $this->assertEquals($array('multi_curl'), $container->getDefinition('buzz.client.curl')->getTag('buzz.client'));
+        $this->assertTrue($container->hasDefinition('buzz.client.file_get_contents'));
+        $this->assertEquals($array('file_get_contents'), $container->getDefinition('buzz.client.curl')->getTag('buzz.client'));
+    }
+
     public function testLoadWithDefinedBrowser()
     {
         $container = new ContainerBuilder();

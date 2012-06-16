@@ -9,6 +9,8 @@
         <parameter key="buzz.browser_manager.class">Buzz\Bundle\BuzzBundle\Buzz\BrowserManager</parameter>
         <parameter key="buzz.message.factory_manager.class">Buzz\Bundle\BuzzBundle\Buzz\Message\FactoryManager</parameter>
         <parameter key="buzz.client.curl.class">Buzz\Client\Curl</parameter>
+        <parameter key="buzz.client.multi_curl.class">Buzz\Client\MultiCurl</parameter>
+        <parameter key="buzz.client.file_get_contents.class">Buzz\Client\FileGetContents</parameter>
         <parameter key="buzz.listener.history.class">Buzz\Listener\HistoryListener</parameter>
         <parameter key="buzz.listener.history_journal.class">Buzz\Listener\History\Journal</parameter>
     </parameters>
@@ -30,6 +32,12 @@
         <!-- Clients -->
         <service id="buzz.client.curl" class="%buzz.client.curl.class%">
             <tag name="buzz.client" alias="curl" />
+        </service>
+        <service id="buzz.client.multi_curl" class="%buzz.client.multi_curl.class%">
+            <tag name="buzz.client" alias="multi_curl" />
+        </service>
+        <service id="buzz.client.file_get_contents" class="%buzz.client.file_get_contents.class%">
+            <tag name="buzz.client" alias="file_get_contents" />
         </service>
 
         <!-- Listeners -->
