@@ -1,6 +1,14 @@
 BuzzBundle
 ==========
 
+Installation
+------------
+
+If you have not yet installed BuzzBundle, see the Installation_ guide.
+
+.. _Installation: ./installation.rst
+
+
 How to use
 ----------
 
@@ -84,8 +92,8 @@ For every ``browser`` (:class:`Buzz\\Browser`), you can define:
 
     - a ``client`` (:class:`Buzz\\Client\\ClientInterface`)
     - a ``factory_message`` (:class:`Buzz\\Message\\Factory\\FactoryInterface`)
-    - a ``host`` (see `Custom browser`_).
-    - a ``listener`` (:class:`Buzz\\Listener\\ListenerInterface`) (see `Custom listener`_).
+    - a ``host`` (:class:`Buzz\\Listener\\HostListener`)
+    - a ``listener`` (:class:`Buzz\\Listener\\ListenerInterface`) (see `Custom listener`_)
 
 
 client:

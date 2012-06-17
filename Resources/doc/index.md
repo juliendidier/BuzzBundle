@@ -1,5 +1,9 @@
 # BuzzBundle
 
+## Installation
+
+If you have not yet installed BuzzBundle, see the [Installation](./Resources/doc/installation.md) guide.
+
 ## How to use
 
 I want to set Curl requests on Google.
@@ -7,31 +11,26 @@ I want to set Curl requests on Google.
 The `config` should like this:
 
 ``` yaml
-
 buzz:
     google:
         client: curl
         host: http://www.google.com
-
 ```
 
 And the code which execute a request to `http://www.google.com/`:
 
 ``` php
-
 $buzz = $this->container->get('buzz');
 $browser = $buzz->get('google');
 $response = $browser->get('/');
 
 echo $browser->getLastRequest()."\n";
 echo $response;
-
 ```
 
 ## Configuration
 
 ``` yaml
-
 buzz:
     profiler:  %kernel.debug%
     listeners:
@@ -44,7 +43,6 @@ buzz:
             message_factory: ~
             host: 'http://localhost'
             listeners: [ foo ]
-
 ```
 
 ### profiler:
@@ -52,7 +50,6 @@ buzz:
 **type**: `boolean` **default**: `%kernel.debug%`
 
 If `profiler` is `true`, a buzz panel will be available in the ``Symfony Profiler``.
-
 
 ### listeners:
 
@@ -65,7 +62,7 @@ Listeners are used to hook the method ``send`` in `Buzz\\Browser`.
 **type**: ``string``
 
 The ``listener`` (`Buzz\\Listener\\ListenerInterface`) configuration
-accepts only a `service` identifier (see `Custom listener`_).
+accepts only a `service` identifier (see [Custom listener](#custom-listener) section).
 
 ### browsers:
 
@@ -79,17 +76,17 @@ It is a collection of browsers you can instanciate without creating dedicated se
 
 For every `browser` (`Buzz\\Browser`), you can define:
 
-- a `client` (:class:`Buzz\\Client\\ClientInterface`)
-- a `factory_message` (:class:`Buzz\\Message\\Factory\\FactoryInterface`)
-- a `host` (see `Custom browser`_).
-- a `listener` (:class:`Buzz\\Listener\\ListenerInterface`) (see `Custom listener`_).
+- a `client` (`Buzz\\Client\\ClientInterface`)
+- a `factory_message` (`Buzz\\Message\\Factory\\FactoryInterface`)
+- a `host` (`Buzz\\Listener\\HostListener`)
+- a `listener` (`Buzz\\Listener\\ListenerInterface`) (see [Custom listener](#custom-listener) section)
 
 
 ### client:
 
 **type**: `string`
 
-You can use the default clients (:class:`Buzz\\Client\\ClientInterface`),
+You can use the default clients (`Buzz\\Client\\ClientInterface`),
 defined by
 the [Buzz](https://github.com/kriswallsmith/Buzz) library.
 
@@ -132,7 +129,6 @@ You can redefine the class of your browser, by creating a service tags with
 `buzz.browser` :
 
 ``` xml
-
 <services>
     <service id="some.service.id" class="My\Custom\Class">
         <argument /> <!-- ClientInterface -->
@@ -140,7 +136,6 @@ You can redefine the class of your browser, by creating a service tags with
         <tag name="buzz.browser" alias="foo" />
     </service>
 </services>
-
 ```
 
 The initial configuration is used for your custom service. You don't have to
@@ -157,7 +152,6 @@ An example of a listener service, with `%my_token%` dependency:
 The `config`:
 
 ``` yaml
-
 buzz:
     listeners:
         token: acme_client.buzz.listener.token
@@ -166,25 +160,21 @@ buzz:
             client: curl
             host: http://www.google.com
             listeners: [ token ]
-
 ```
 
 The `service` definition:
 
 ``` xml
-
 <services>
     <service id="acme_client.buzz.listener.token" class="Acme\Bundle\ClientBundle\Buzz\Listener\TokenListener">
         <argument>%my_token%</argument>
     </service>
 </services>
-
 ```
 
 The `listener` class:
 
 ``` php
-
 # Acme\Bundle\ClientBundle\Buzz\Listener\TokenListener
 
 use Buzz\Listener\ListenerInterface;
@@ -214,5 +204,4 @@ class TokenListener implements ListenerInterface
     {
     }
 }
-
 ```
