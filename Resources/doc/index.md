@@ -2,7 +2,7 @@
 
 ## Installation
 
-If you have not yet installed BuzzBundle, see the [Installation](./Resources/doc/installation.md) guide.
+If you have not yet installed BuzzBundle, see the [Installation](installation.md) guide.
 
 ## How to use
 
