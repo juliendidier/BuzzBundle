@@ -2,17 +2,35 @@
 
 ## Installation
 
-### Step 1: Add BuzzBundle in your composer.json
+Add BuzzBundle in your `deps` file:
 
-```js
-{
-    "require": {
-        "juliendidier/buzz-bundle": "dev-master"
-    }
-}
+```text
+[buzz]
+   git=http://github.com/kriswallsmith/Buzz.git
+   version=v0.6
+
+[BuzzBundle]
+    git=http://github.com/juliendidier/BuzzBundle.git
+    target=/bunles/Buzz/Bundle/BuzzBundle
+    version=origin/2.0
 ```
 
-### Step 2: Enable the bundle
+Enable the bundleRun the vendors script to download the bundle:
+
+```` bash
+$ php bin/vendors install
+````
+
+Add the `Buzz` namespace to your autoloader:
+
+```` php
+# app/autoload.php
+
+$loader->registerNamespaces(array(
+    // ...
+    'Buzz' => __DIR__.'/../vendor/bundles',
+));
+````
 
 Finally, enable the bundle in the kernel:
 
