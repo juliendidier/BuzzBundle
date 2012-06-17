@@ -11,31 +11,31 @@ use Buzz\Bundle\BuzzBundle\DependencyInjection\Compiler\BrowserPass;
 
 class BrowserPassTest extends \PHPUnit_Framework_TestCase
 {
-    public function testProcess()
+    public function testProcessNoConfig()
     {
         $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerBuilder');
         $browserPass = new BrowserPass();
 
         $return = $browserPass->process($container);
         $this->assertEquals(null, $return, 'No buzz.browser_manager registered');
+    }
 
+    public function testProcess()
+    {
         $container = $this->getContainer();
-        $def = $container
-            ->register('buzz.browser.my_foo')
-            ->setClass('Buzz\Browser')
-            ->setArguments(array(null, null))
-            ->addTag('buzz.browser', array('alias' => 'foo'))
-        ;
-
+        $browserPass = new BrowserPass();
         $browserPass->process($container);
 
         $this->assertTrue($container->get('buzz.browser_manager')->has('foo'));
         $browser = $container->get('buzz.browser_manager')->get('foo');
         $this->assertEquals($browser, $container->get('buzz.browser_manager')->get('foo'));
-        $this->assertEquals($browser->getListener(), $container->get('buzz.listener.host_foo'));
 
         $listener = $container->getDefinition('buzz.listener.host_foo');
         $this->assertEquals('my://foo', $listener->getArgument(0));
+        $this->assertInstanceOf('Buzz\Listener\ListenerChain', $browser->getListener());
+        $listeners = $browser->getListener()->getListeners();
+        $this->assertEquals($listeners[0], $container->get('buzz.listener.host_foo'));
+        $this->assertEquals($listeners[1], $container->get('bar'));
     }
 
     protected function getContainer()
@@ -46,19 +46,38 @@ class BrowserPassTest extends \PHPUnit_Framework_TestCase
         $extension = new BuzzExtension();
         $extension->load($this->getConfig(), $container);
 
+        $container
+            ->register('buzz.browser.my_foo')
+            ->setClass('Buzz\Browser')
+            ->setArguments(array(null, null))
+            ->addTag('buzz.browser', array('alias' => 'foo'))
+        ;
+
+        $container
+            ->register('bar')
+            ->setClass('Buzz\Listener\CallbackListener')
+            ->setArguments(array(function(){ return; }))
+        ;
+
         return $container;
     }
 
     private function getConfig()
     {
         return array(
-            array('browsers' => array(
-                'foo' => array(
-                    'client' => 'curl',
-                    'message_factory' => 'foo',
-                    'host' => 'my://foo',
+            array(
+                'listeners' => array(
+                    'bar' => 'bar'
                 ),
-            )),
+                'browsers' => array(
+                    'foo' => array(
+                        'client' => 'curl',
+                        'message_factory' => 'foo',
+                        'host' => 'my://foo',
+                        'listeners' => array('bar')
+                    )
+                )
+            )
         );
     }
 }
