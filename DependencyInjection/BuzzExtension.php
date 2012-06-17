@@ -55,6 +55,7 @@ class BuzzExtension extends Extension
 
         $container->register($browser, 'Buzz\Browser')
             ->setArguments(array(null, null))
+            ->addTag('buzz.browser', array('alias'=> $name))
         ;
 
         $browser = 'buzz.browser.'.$name;
