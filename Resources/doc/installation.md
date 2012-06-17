@@ -7,7 +7,7 @@
 ```js
 {
     "require": {
-        "juliendidier/buzz-bundle": "*"
+        "juliendidier/buzz-bundle": "dev-master"
     }
 }
 ```

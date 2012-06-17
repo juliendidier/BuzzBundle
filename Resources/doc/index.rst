@@ -19,16 +19,17 @@ The ``config`` should like this:
 .. code-block:: yaml
 
     buzz:
-        google:
-            client: curl
-            host: http://www.google.com
+        browsers:
+            google:
+                client: curl
+                host: http://www.google.com
 
 And the code which execute a request to ``http://www.google.com/``:
 
 .. code-block:: php
 
     $buzz = $this->container->get('buzz');
-    $browser = $buzz->get('google');
+    $browser = $buzz->getBrowser('google');
     $response = $browser->get('/');
 
     echo $browser->getLastRequest()."\n";
@@ -147,15 +148,17 @@ Custom browser:
 ...............
 
 You can redefine the class of your browser, by creating a service tags with
-``buzz.browser`` :
+``buzz.browser``:
 
 .. code-block:: xml
+
+    # src/Acme/Bundle/ClientBundle/Resources/config/services.xml
 
     <services>
         <service id="some.service.id" class="My\Custom\Class">
             <argument /> <!-- ClientInterface -->
             <argument /> <!-- FactoryInterface -->
-            <tag name="buzz.browser" alias="foo" />
+            <tag name="buzz.browser" alias="google" />
         </service>
     </services>
 
@@ -181,6 +184,8 @@ The ``config``:
 
 .. code-block:: yaml
 
+    # app/config/config.yml
+
     buzz:
         listeners:
             token: acme_client.buzz.listener.token
@@ -190,9 +195,18 @@ The ``config``:
                 host: http://www.google.com
                 listeners: [ token ]
 
+.. code-block:: yaml
+
+    # app/config/parameters.yml
+
+    parameters:
+        my_token:   MyTokenKey
+
 The ``service`` definition:
 
 .. code-block:: xml
+
+    # src/Acme/Bundle/ClientBundle/Resources/config/services.xml
 
     <services>
         <service id="acme_client.buzz.listener.token" class="Acme\Bundle\ClientBundle\Buzz\Listener\TokenListener">
@@ -214,8 +228,12 @@ The ``listener`` class:
 
     class TokenListener implements ListenerInterface
     {
+        private $token;
 
-        // ...
+        public function __construct($token)
+        {
+            $this->token = $token;
+        }
 
         public function preSend(RequestInterface $request)
         {

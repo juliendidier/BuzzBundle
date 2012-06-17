@@ -12,16 +12,17 @@ The `config` should like this:
 
 ``` yaml
 buzz:
-    google:
-        client: curl
-        host: http://www.google.com
+    browsers:
+        google:
+            client: curl
+            host: http://www.google.com
 ```
 
 And the code which execute a request to `http://www.google.com/`:
 
 ``` php
 $buzz = $this->container->get('buzz');
-$browser = $buzz->get('google');
+$browser = $buzz->getBrowser('google');
 $response = $browser->get('/');
 
 echo $browser->getLastRequest()."\n";
@@ -129,11 +130,13 @@ You can redefine the class of your browser, by creating a service tags with
 `buzz.browser` :
 
 ``` xml
+# src/Acme/Bundle/ClientBundle/Resources/config/services.xml
+
 <services>
     <service id="some.service.id" class="My\Custom\Class">
         <argument /> <!-- ClientInterface -->
         <argument /> <!-- FactoryInterface -->
-        <tag name="buzz.browser" alias="foo" />
+        <tag name="buzz.browser" alias="google" />
     </service>
 </services>
 ```
@@ -152,6 +155,8 @@ An example of a listener service, with `%my_token%` dependency:
 The `config`:
 
 ``` yaml
+# app/config/config.yml
+
 buzz:
     listeners:
         token: acme_client.buzz.listener.token
@@ -162,9 +167,18 @@ buzz:
             listeners: [ token ]
 ```
 
+``` yaml
+# app/config/parameters.yml
+
+parameters:
+    my_token:   MyTokenKey
+```
+
 The `service` definition:
 
 ``` xml
+# src/Acme/Bundle/ClientBundle/Resources/config/services.xml
+
 <services>
     <service id="acme_client.buzz.listener.token" class="Acme\Bundle\ClientBundle\Buzz\Listener\TokenListener">
         <argument>%my_token%</argument>
@@ -185,8 +199,12 @@ use Buzz\Util\CookieJar;
 
 class TokenListener implements ListenerInterface
 {
+    private $token;
 
-    // ...
+    public function __construct($token)
+    {
+        $this->token = $token;
+    }
 
     public function preSend(RequestInterface $request)
     {

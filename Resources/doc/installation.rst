@@ -11,7 +11,7 @@ Step 1: Add BuzzBundle in your composer.json
 
     {
         "require": {
-            "juliendidier/buzz-bundle": "*"
+            "juliendidier/buzz-bundle": "dev-master"
         }
     }
 
