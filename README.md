@@ -8,4 +8,5 @@ a library for issuing HTTP requests by Kris Wallsmith
 ## More resources:
 
 * [Licence](http://github.com/juliendidier/BuzzBundle/blob/master/Resources/meta/LICENCE)
-* [Documentation](http://github.com/juliendidier/BuzzBundle/blob/master/Resources/doc/index.rst)
+* [Documentation](http://github.com/juliendidier/BuzzBundle/blob/master/Resources/doc/index.md)
+
