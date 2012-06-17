@@ -15,7 +15,9 @@ Step 1: Add BuzzBundle in your composer.json
         }
     }
 
-### Step 2: Enable the bundle
+
+Step 2: Enable the bundle
+.........................
 
 Finally, enable the bundle in the kernel:
 
