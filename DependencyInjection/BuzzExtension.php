@@ -73,6 +73,7 @@ class BuzzExtension extends Extension
                 ->register($listener, 'Buzz\Bundle\BuzzBundle\Buzz\Listener\HostListener')
                 ->addArgument($config['host'])
             ;
+
             $browser->addMethodCall('addListener', array(new Reference($listener)));
         }
     }
