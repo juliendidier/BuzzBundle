@@ -28,7 +28,7 @@ class BrowserPassTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($container->get('buzz.browser_manager')->has('foo'));
         $browser = $container->get('buzz.browser_manager')->get('foo');
-        $this->assertEquals($browser, $container->get('buzz.browser_manager')->get('foo'));
+        $this->assertEquals($browser, $container->get('buzz.browser.my_foo'));
 
         $listener = $container->getDefinition('buzz.listener.host_foo');
         $this->assertEquals('my://foo', $listener->getArgument(0));

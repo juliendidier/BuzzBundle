@@ -55,11 +55,14 @@ class BuzzExtension extends Extension
 
         $container->register($browser, 'Buzz\Browser')
             ->setArguments(array(null, null))
-            ->addTag('buzz.browser', array('alias'=> $name))
         ;
 
-        $browser = 'buzz.browser.'.$name;
+        $container->getDefinition('buzz.browser_manager')
+            ->addMethodCall('set', array($name, new Reference($browser)))
+        ;
+
         $browser = $container->getDefinition($browser);
+
         if (isset($config['client']) && !empty($config['client'])) {
             $browser
                 ->replaceArgument(0, new Reference('buzz.client.'.$config['client']))

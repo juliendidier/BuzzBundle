@@ -19,9 +19,15 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($container->hasDefinition('buzz.browser.foo'));
         $browser = $container->getDefinition('buzz.browser.foo');
+        $this->assertNull($browser->getArgument(1));
+
+        $calls = $container->getDefinition('buzz.browser_manager')->getMethodCalls();
+        $this->assertCount(1, $calls);
+        $expected = array('set', array('foo', new Reference('buzz.browser.foo')));
+        $this->assertEquals($expected, $calls[0]);
+
         $client = new Reference('buzz.client.curl');
         $this->assertEquals($client, $browser->getArgument(0));
-        $this->assertNull($browser->getArgument(1));
 
         $this->assertTrue($container->hasDefinition('buzz.listener.host_foo'));
         $listener = $container->getDefinition('buzz.listener.host_foo');
