@@ -7,11 +7,10 @@ Add BuzzBundle in your `deps` file:
 ```text
 [buzz]
    git=http://github.com/kriswallsmith/Buzz.git
-   version=v0.6
 
 [BuzzBundle]
     git=http://github.com/juliendidier/BuzzBundle.git
-    target=/bunles/Buzz/Bundle/BuzzBundle
+    target=/bundles/Buzz/Bundle/BuzzBundle
     version=origin/2.0
 ```
 
