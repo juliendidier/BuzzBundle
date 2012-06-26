@@ -1,10 +1,15 @@
 <?php
 
-if (!@include __DIR__ . '/../vendor/.composer/autoload.php') {
-    die("You must set up the project dependencies, run the following commands:
-wget http://getcomposer.org/composer.phar
-php composer.phar install
-");
+if (!$loader = @include __DIR__.'/../vendor/autoload.php') {
+    echo <<<EOM
+You must set up the project dependencies by running the following commands:
+
+    curl -s http://getcomposer.org/installer | php
+    php composer.phar install
+
+EOM;
+
+    exit(1);
 }
 
 spl_autoload_register(function($class) {
