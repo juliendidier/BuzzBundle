@@ -66,6 +66,7 @@ class BrowserPassTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(
+                'profiler' => false,
                 'listeners' => array(
                     'bar' => 'bar'
                 ),

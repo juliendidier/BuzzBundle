@@ -23,8 +23,8 @@ class BuzzDataCollector extends DataCollector
 
         foreach ($this->listener->getJournal() as $entry) {
             $this->data[] = array(
-                'request' => $entry->getRequest(),
-                'response' => $entry->getResponse(),
+                'request' => clone $entry->getRequest(),
+                'response' => clone $entry->getResponse(),
                 'duration' => $entry->getDuration(),
             );
         }

@@ -26,7 +26,7 @@ class Configuration implements ConfigurationInterface
     {
         $rootNode
             ->children()
-                ->booleanNode('profiler')->defaultValue(false)->end()
+                ->booleanNode('profiler')->defaultValue('%kernel.debug%')->end()
                 ->arrayNode('browsers')
                     ->useAttributeAsKey('browser')
                     ->prototype('array')

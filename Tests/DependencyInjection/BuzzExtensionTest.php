@@ -15,6 +15,7 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
         $extension = new BuzzExtension();
 
         $configs = $extension->load($this->getConfig(), $container);
+        $this->assertEquals('%kernel.debug%', $configs['profiler']);
         $this->assertEquals(array('host' => array('id' => 'foo.bar')), $configs['listeners']);
 
         $this->assertTrue($container->hasDefinition('buzz.browser.foo'));
