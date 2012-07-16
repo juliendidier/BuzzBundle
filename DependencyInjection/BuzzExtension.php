@@ -4,7 +4,7 @@ namespace Buzz\Bundle\BuzzBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -22,8 +22,8 @@ class BuzzExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $this->loadListenersSection($config['listeners'], $container);
-        $this->loadBrowsersSection($config['browsers'], $container);
+        $listeners = $this->loadListenersSection($config['listeners'], $container);
+        $this->loadBrowsersSection($config['browsers'], $listeners, $container);
 
         if ($config['profiler']) {
             $this->loadProfiler(array_keys($config['browsers']), $container);
@@ -38,15 +38,25 @@ class BuzzExtension extends Extension
     {
         $listeners = array();
         foreach ($config as $key => $listener) {
-            $listeners[$key] = $listener['id'];
+            $listeners[$key] = new Reference($listener['id']);
         }
+
+        return $listeners;
     }
 
-    private function loadBrowsersSection(array $config, ContainerBuilder $container)
+    private function loadBrowsersSection(array $config, array $listeners, ContainerBuilder $container)
     {
         foreach ($config as $name => $browserConfig) {
-            $this->createBrowser($name, $browserConfig, $container);
+            $browser = $this->createBrowser($name, $browserConfig, $container);
+            $this->configureBrowser($browser, $browserConfig, $listeners);
          }
+    }
+
+    private function configureBrowser(Definition $browser, array $browserConfig, array $listeners)
+    {
+        foreach ($browserConfig['listeners'] as $listener) {
+            $browser->addMethodCall('addListener', array($listeners[$listener]));
+        }
     }
 
     private function createBrowser($name, array $config, ContainerBuilder $container)
@@ -80,6 +90,8 @@ class BuzzExtension extends Extension
 
             $browser->addMethodCall('addListener', array(new Reference($listener)));
         }
+
+        return $browser;
     }
 
     private function loadProfiler(array $browserNames, ContainerBuilder $container)

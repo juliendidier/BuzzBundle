@@ -15,12 +15,19 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
         $extension = new BuzzExtension();
 
         $configs = $extension->load($this->getConfig(), $container);
+
         $this->assertEquals('%kernel.debug%', $configs['profiler']);
-        $this->assertEquals(array('host' => array('id' => 'foo.bar')), $configs['listeners']);
+        $this->assertEquals(array('foo_bar' => array('id' => 'foo.bar')), $configs['listeners']);
 
         $this->assertTrue($container->hasDefinition('buzz.browser.foo'));
         $browser = $container->getDefinition('buzz.browser.foo');
         $this->assertNull($browser->getArgument(1));
+        $calls = $browser->getMethodCalls();
+        $this->assertCount(3, $calls);
+        $expected = array('addListener', array(new Reference('buzz.listener.host_foo')));
+        $this->assertEquals($expected, $calls[0]);
+        $expected = array('addListener', array(new Reference('foo.bar')));
+        $this->assertEquals($expected, $calls[1]);
 
         $calls = $container->getDefinition('buzz.browser_manager')->getMethodCalls();
         $this->assertCount(1, $calls);
@@ -92,7 +99,7 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
         return array(
             array(
                 'listeners' => array(
-                    'host' => 'foo.bar'
+                    'foo_bar' => 'foo.bar'
                 ),
                 'browsers' => array(
                     'foo' => array(
@@ -100,7 +107,7 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
                         'message_factory' => 'foo',
                         'host' => 'my://foo',
                         'listeners' => array(
-                            'host',
+                            'foo_bar',
                         )
                     )
                 )
