@@ -34,6 +34,7 @@ class BrowserPassTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('my://foo', $listener->getArgument(0));
         $this->assertInstanceOf('Buzz\Listener\ListenerChain', $browser->getListener());
         $listeners = $browser->getListener()->getListeners();
+        $this->assertCount(2, $listeners, 'Two listeners defined in config');
         $this->assertEquals($listeners[0], $container->get('buzz.listener.host_foo'));
         $this->assertEquals($listeners[1], $container->get('bar'));
     }
