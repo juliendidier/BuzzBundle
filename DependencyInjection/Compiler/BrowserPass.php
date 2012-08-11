@@ -31,9 +31,6 @@ class BrowserPass implements CompilerPassInterface
 
             $baseDefinition = $container->getDefinition('buzz.browser.'.$name);
             $definition = $container->getDefinition($serviceId);
-            $clientId = 'buzz.client.'.$config['browsers'][$name]['client'];
-
-            $baseDefinition->replaceArgument(0, new Reference($clientId));
 
             $arguments = $baseDefinition->getArguments();
             foreach ($arguments as $index => $argument) {
