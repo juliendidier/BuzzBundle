@@ -22,6 +22,10 @@ class BuzzExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        if ($config['throw_exception']) {
+            $config = $this->configureExceptionListener($config, $container);
+        }
+
         $listeners = $this->loadListenersSection($config['listeners'], $container);
         $this->loadBrowsersSection($config['browsers'], $listeners, $container);
 
@@ -103,7 +107,24 @@ class BuzzExtension extends Extension
             $container->getDefinition('buzz.browser.'.$name)
                 ->addMethodCall('addListener', array(new Reference('buzz.listener.history')))
             ;
-
         }
+    }
+
+    private function configureExceptionListener(array $config, ContainerBuilder $container)
+    {
+        $listenerName = 'exception_listener';
+        $listener = 'buzz.listener.'.$listenerName;
+
+        $container
+            ->register($listener, 'Buzz\Bundle\BuzzBundle\Buzz\Listener\ExceptionListener')
+        ;
+
+        $config['listeners'][$listenerName] = array('id' => $listener);
+
+        foreach($config['browsers'] as $name => $browserConfig) {
+            array_unshift($config['browsers'][$name]['listeners'], $listenerName);
+        }
+
+        return $config;
     }
 }
