@@ -16,6 +16,14 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root("buzz");
 
+        $rootNode
+            ->children()
+                ->booleanNode('profiler')->defaultValue('%kernel.debug%')->end()
+                ->booleanNode('throw_exception')->defaultValue(true)->end()
+                ->end()
+            ->end()
+        ;
+
         $this->addListenerSection($rootNode);
         $this->addBrowserSection($rootNode);
 
@@ -26,8 +34,6 @@ class Configuration implements ConfigurationInterface
     {
         $rootNode
             ->children()
-                ->booleanNode('profiler')->defaultValue('%kernel.debug%')->end()
-                ->booleanNode('throw_exception')->defaultValue(true)->end()
                 ->arrayNode('browsers')
                     ->useAttributeAsKey('browser')
                     ->prototype('array')
