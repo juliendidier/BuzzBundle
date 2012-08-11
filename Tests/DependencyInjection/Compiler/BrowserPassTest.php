@@ -55,6 +55,12 @@ class BrowserPassTest extends \PHPUnit_Framework_TestCase
         ;
 
         $container
+            ->register('buzz.client.foo')
+            ->setClass('Buzz\Client\FileGetContents')
+            ->setArguments(array(null, null))
+        ;
+
+        $container
             ->register('bar')
             ->setClass('Buzz\Listener\CallbackListener')
             ->setArguments(array(function(){ return; }))
@@ -74,7 +80,7 @@ class BrowserPassTest extends \PHPUnit_Framework_TestCase
                 ),
                 'browsers' => array(
                     'foo' => array(
-                        'client' => 'curl',
+                        'client' => array('name' => 'file_get_contents'),
                         'message_factory' => 'foo',
                         'host' => 'my://foo',
                         'listeners' => array('bar')

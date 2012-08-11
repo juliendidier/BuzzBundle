@@ -37,8 +37,8 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('browsers')
                     ->useAttributeAsKey('browser')
                     ->prototype('array')
+                        ->append($this->getClientConfiguration())
                         ->children()
-                            ->scalarNode('client')->end()
                             ->scalarNode('message_factory')->end()
                             ->scalarNode('host')->end()
                             ->arrayNode('listeners')
@@ -67,6 +67,22 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+            ->end()
+        ;
+    }
+
+    private function getClientConfiguration()
+    {
+        $node = new ArrayNodeDefinition('client');
+
+        return $node
+            ->beforeNormalization()
+                ->ifTrue(function($v){ return is_string($v); })
+                ->then(function($v){ return array('name' => $v); })
+            ->end()
+            ->children()
+                ->scalarNode('name')->end()
+                ->scalarNode('timeout')->defaultNull()->end()
             ->end()
         ;
     }

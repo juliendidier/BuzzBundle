@@ -5,6 +5,7 @@ namespace Buzz\Bundle\BuzzBundle\DependencyInjection;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -77,12 +78,7 @@ class BuzzExtension extends Extension
 
         $browser = $container->getDefinition($browser);
 
-        if (isset($config['client']) && !empty($config['client'])) {
-            $browser
-                ->replaceArgument(0, new Reference('buzz.client.'.$config['client']))
-                ->replaceArgument(1, null)
-            ;
-        }
+        $this->configureClientBrowser($name, $browser, $config, $container);
 
         if (!empty($config['host'])) {
             $listener = 'buzz.listener.host_'.$name;
@@ -96,6 +92,23 @@ class BuzzExtension extends Extension
         }
 
         return $browser;
+    }
+
+    private function configureClientBrowser($name, Definition $browser, array $config, ContainerBuilder $container)
+    {
+        $baseDefinition = new DefinitionDecorator('buzz.client.'.$config['client']['name']);
+        $container->setDefinition('buzz.client.'.$name,$baseDefinition);
+        $definition = $container->getDefinition('buzz.client.'.$name);
+
+        $timeout = $config['client']['timeout'];
+        if (null !== $timeout) {
+            $definition->addMethodCall('setTimeout', array($timeout));
+        }
+
+        $browser
+            ->replaceArgument(0, new Reference('buzz.client.'.$name))
+            ->replaceArgument(1, null)
+        ;
     }
 
     private function loadProfiler(array $browserNames, ContainerBuilder $container)

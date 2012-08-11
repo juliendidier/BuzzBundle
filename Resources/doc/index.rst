@@ -42,6 +42,7 @@ Configuration
 .. code-block:: yaml
 
     buzz:
+    throw_exception: true
         profiler:  %kernel.debug%
         listeners:
             # Example:
@@ -49,10 +50,17 @@ Configuration
         browsers:
             # Example:
             foo:
-                client: curl
+                client: [ name: curl, timeout: 5 ]
                 message_factory: ~
                 host: 'http://localhost'
                 listeners: [ foo ]
+
+throw_exception:
+................
+
+**type**: ``boolean`` **default**: ``true``
+
+If ``throw_exception`` is ``true``, a listener will throws exceptions when the response of a request failed.
 
 profiler:
 .........
@@ -100,18 +108,19 @@ For every ``browser`` (:class:`Buzz\\Browser`), you can define:
 client:
 .......
 
-**type**: ``string``
+**type**: ``array``
 
 You can use the default clients (:class:`Buzz\\Client\\ClientInterface`),
 defined by
 the Buzz_ library.
 
-The defined clients are:
+The defined ``name`` clients are:
 
     - ``curl`` (see :class:`Buzz\\Client\\Curl`)
     - ``multi_curl`` (see :class:`Buzz\\Client\\MultiCurl`)
     - ``file_get_contents`` (see :class:`Buzz\\Client\\FileGetContents`)
 
+The ``timeout`` can be set for this ``client``.
 
 message_factory:
 ................

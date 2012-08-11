@@ -30,15 +30,9 @@
         </service>
 
         <!-- Clients -->
-        <service id="buzz.client.curl" class="%buzz.client.curl.class%">
-            <tag name="buzz.client" alias="curl" />
-        </service>
-        <service id="buzz.client.multi_curl" class="%buzz.client.multi_curl.class%">
-            <tag name="buzz.client" alias="multi_curl" />
-        </service>
-        <service id="buzz.client.file_get_contents" class="%buzz.client.file_get_contents.class%">
-            <tag name="buzz.client" alias="file_get_contents" />
-        </service>
+        <service id="buzz.client.curl" class="%buzz.client.curl.class%" abstract="true" />
+        <service id="buzz.client.multi_curl" class="%buzz.client.multi_curl.class%" abstract="true" />
+        <service id="buzz.client.file_get_contents" class="%buzz.client.file_get_contents.class%" abstract="true" />
 
         <!-- Listeners -->
         <service id="buzz.listener.history" class="%buzz.listener.history.class%">

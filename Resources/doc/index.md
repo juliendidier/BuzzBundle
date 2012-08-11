@@ -41,7 +41,7 @@ buzz:
     browsers:
         # Example:
         foo:
-            client: curl
+            client: [ name: curl, timeout: 5 ]
             message_factory: ~
             host: 'http://localhost'
             listeners: [ foo ]
@@ -92,17 +92,19 @@ For every `browser` (`Buzz\\Browser`), you can define:
 
 ### client:
 
-**type**: `string`
+**type**: `array`
 
 You can use the default clients (`Buzz\\Client\\ClientInterface`),
 defined by
 the [Buzz](https://github.com/kriswallsmith/Buzz) library.
 
-The defined clients are:
+The defined `name` clients are:
 
 - `curl` (see `Buzz\\Client\\Curl`)
 - `multi_curl` (see `Buzz\\Client\\MultiCurl`)
 - `file_get_contents` (see `Buzz\\Client\\FileGetContents`)
+
+The `timeout` can be set for this `client`.
 
 
 ### message_factory:
