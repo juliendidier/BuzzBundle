@@ -33,6 +33,7 @@ echo $response;
 
 ``` yaml
 buzz:
+    throw_exception: true
     profiler:  %kernel.debug%
     listeners:
         # Example:
@@ -45,6 +46,12 @@ buzz:
             host: 'http://localhost'
             listeners: [ foo ]
 ```
+
+### throw_exception:
+
+**type**: `boolean` **default**: `true`
+
+If `throw_exception` is `true`, a listener will throws exceptions when the response of a request failed.
 
 ### profiler:
 

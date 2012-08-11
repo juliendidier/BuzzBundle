@@ -16,18 +16,24 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
 
         $configs = $extension->load($this->getConfig(), $container);
 
-        $this->assertEquals('%kernel.debug%', $configs['profiler']);
-        $this->assertEquals(array('foo_bar' => array('id' => 'foo.bar')), $configs['listeners']);
+        $this->assertSame('%kernel.debug%', $configs['profiler']);
+        $this->assertSame(true, $configs['throw_exception']);
+        $this->assertSame(array('id' => 'foo.bar'), $configs['listeners']['foo_bar']);
 
         $this->assertTrue($container->hasDefinition('buzz.browser.foo'));
         $browser = $container->getDefinition('buzz.browser.foo');
         $this->assertNull($browser->getArgument(1));
         $calls = $browser->getMethodCalls();
-        $this->assertCount(3, $calls);
+        $this->assertCount(4, $calls);
+
         $expected = array('addListener', array(new Reference('buzz.listener.host_foo')));
         $this->assertEquals($expected, $calls[0]);
-        $expected = array('addListener', array(new Reference('foo.bar')));
+        $expected = array('addListener', array(new Reference('buzz.listener.exception_listener')));
         $this->assertEquals($expected, $calls[1]);
+        $expected = array('addListener', array(new Reference('foo.bar')));
+        $this->assertEquals($expected, $calls[2]);
+        $expected = array('addListener', array(new Reference('buzz.listener.history')));
+        $this->assertEquals($expected, $calls[3]);
 
         $calls = $container->getDefinition('buzz.browser_manager')->getMethodCalls();
         $this->assertCount(1, $calls);
@@ -119,6 +125,7 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(
+                'throw_exception' => false,
                 'profiler' =>  true,
                 'browsers' => array(
                     'foo' => array()
