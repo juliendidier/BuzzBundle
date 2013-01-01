@@ -7,7 +7,6 @@
     <parameters>
         <parameter key="buzz.class">Buzz\Bundle\BuzzBundle\Buzz\Buzz</parameter>
         <parameter key="buzz.browser_manager.class">Buzz\Bundle\BuzzBundle\Buzz\BrowserManager</parameter>
-        <parameter key="buzz.message.factory_manager.class">Buzz\Bundle\BuzzBundle\Buzz\Message\FactoryManager</parameter>
         <parameter key="buzz.client.curl.class">Buzz\Client\Curl</parameter>
         <parameter key="buzz.client.multi_curl.class">Buzz\Client\MultiCurl</parameter>
         <parameter key="buzz.client.file_get_contents.class">Buzz\Client\FileGetContents</parameter>
@@ -20,14 +19,8 @@
             <argument type="service" id="buzz.browser_manager" />
         </service>
 
-        <!-- Message Factory -->
-        <service id="buzz.message.factory_manager" class="%buzz.message.factory_manager.class%">
-        </service>
-
         <!-- Browser -->
-        <service id="buzz.browser_manager" class="%buzz.browser_manager.class%">
-            <argument type="service" id="buzz.message.factory_manager" />
-        </service>
+        <service id="buzz.browser_manager" class="%buzz.browser_manager.class%" />
 
         <!-- Clients -->
         <service id="buzz.client.curl" class="%buzz.client.curl.class%" abstract="true" />

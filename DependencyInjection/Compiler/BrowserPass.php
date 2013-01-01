@@ -38,7 +38,9 @@ class BrowserPass implements CompilerPassInterface
             }
 
             $calls = $baseDefinition->getMethodCalls();
-            $definition->setMethodCalls($calls);
+            foreach ($calls as $call) {
+                $definition->addMethodCall($call[0], $call[1]);
+            }
 
             $bm->addMethodCall('set', array($name, new Reference($serviceId)));
         }

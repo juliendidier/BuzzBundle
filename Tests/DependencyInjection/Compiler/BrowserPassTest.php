@@ -81,7 +81,7 @@ class BrowserPassTest extends \PHPUnit_Framework_TestCase
                 'browsers' => array(
                     'foo' => array(
                         'client' => array('name' => 'file_get_contents'),
-                        'message_factory' => 'foo',
+                        'message_factory' => null,
                         'host' => 'my://foo',
                         'listeners' => array('bar')
                     )

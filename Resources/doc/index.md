@@ -116,8 +116,8 @@ A `message_factory` (`Buzz\\Message\\Factory\\FactoryInterface`) is a factory to
 - `request` (see `Buzz\\Message\\RequestInterface`)
 - `response` (see `Buzz\\Message\\MessageInterface`)
 
-If you don't configure a ,
-the `browser` create a generic `message_factory` (see `Buzz\\Message\\Factory\\Factory`).
+If you don't configure a class,
+the `browser` get the generic `message_factory` class (see `Buzz\\Message\\Factory\\Factory`).
 
 
 ### host:

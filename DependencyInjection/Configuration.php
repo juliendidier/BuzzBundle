@@ -39,7 +39,7 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->append($this->getClientConfiguration())
                         ->children()
-                            ->scalarNode('message_factory')->end()
+                            ->scalarNode('message_factory')->defaultValue(null)->end()
                             ->scalarNode('host')->end()
                             ->arrayNode('listeners')
                                 ->prototype('scalar')->end()

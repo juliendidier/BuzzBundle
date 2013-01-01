@@ -68,9 +68,16 @@ class BuzzExtension extends Extension
     {
         $browser = 'buzz.browser.'.$name;
 
-        $container->register($browser, 'Buzz\Browser')
+        $definition = $container->register($browser, 'Buzz\Browser')
             ->setArguments(array(null, null))
         ;
+
+        if (null !== $config['message_factory']) {
+            $factory = 'buzz.message_factory.'.$name;
+            $container->register($factory, $config['message_factory']);
+
+            $definition->replaceArgument(1, new Reference($factory));
+        }
 
         $container->getDefinition('buzz.browser_manager')
             ->addMethodCall('set', array($name, new Reference($browser)))
@@ -105,10 +112,7 @@ class BuzzExtension extends Extension
             $definition->addMethodCall('setTimeout', array($timeout));
         }
 
-        $browser
-            ->replaceArgument(0, new Reference('buzz.client.'.$name))
-            ->replaceArgument(1, null)
-        ;
+        $browser->replaceArgument(0, new Reference('buzz.client.'.$name));
     }
 
     private function loadProfiler(array $browserNames, ContainerBuilder $container)
@@ -128,9 +132,7 @@ class BuzzExtension extends Extension
         $listenerName = 'exception_listener';
         $listener = 'buzz.listener.'.$listenerName;
 
-        $container
-            ->register($listener, 'Buzz\Bundle\BuzzBundle\Buzz\Listener\ExceptionListener')
-        ;
+        $container->register($listener, 'Buzz\Bundle\BuzzBundle\Buzz\Listener\ExceptionListener');
 
         $config['listeners'][$listenerName] = array('id' => $listener);
 

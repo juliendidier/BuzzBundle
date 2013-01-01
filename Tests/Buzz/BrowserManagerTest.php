@@ -9,13 +9,12 @@ use Buzz\Message\MessageInterface;
 use Buzz\Message\Factory\Factory;
 
 use Buzz\Bundle\BuzzBundle\Buzz\BrowserManager;
-use Buzz\Bundle\BuzzBundle\Buzz\Message\FactoryManager;
 
 class BrowserManagerTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetSetHas()
     {
-        $browserManager = new BrowserManager(new FactoryManagerMock());
+        $browserManager = new BrowserManager();
         $foo = new Browser(new ClientMock());
         $bar = new Browser(new ClientMock());
 
@@ -33,7 +32,7 @@ class BrowserManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testBasicMethodsFail($method)
     {
-        $browserManager = new BrowserManager(new FactoryManagerMock());
+        $browserManager = new BrowserManager();
         $browser = new Browser(new ClientMock());
 
         try {
@@ -69,19 +68,6 @@ class BrowserManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($bm->getIterator() instanceof \ArrayIterator);
         $this->assertEquals(2, count($bm));
-    }
-}
-
-class FactoryManagerMock extends FactoryManager
-{
-    public function has($name)
-    {
-        return true;
-    }
-
-    public function get($name)
-    {
-        return new Factory();
     }
 }
 

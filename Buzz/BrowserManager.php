@@ -4,17 +4,9 @@ namespace Buzz\Bundle\BuzzBundle\Buzz;
 
 use Buzz\Browser;
 
-use Buzz\Bundle\BuzzBundle\Buzz\Message\FactoryManagerInterface;
-
 class BrowserManager implements \Countable, \IteratorAggregate
 {
     private $browsers  = array();
-    private $factories;
-
-    public function __construct(FactoryManagerInterface $factories = null)
-    {
-        $this->factories = $factories;
-    }
 
     /**
      * Set a browser on the collection.
@@ -49,12 +41,7 @@ class BrowserManager implements \Countable, \IteratorAggregate
             throw new \UnexpectedValueException(sprintf('Buzz browser with name "%s" not found.', $name));
         }
 
-        $browser = $this->browsers[$name];
-        if ($this->factories && $this->factories->has($name)) {
-            $browser->setMessageFactory($this->factories->get($name));
-        }
-
-        return $browser;
+        return $this->browsers[$name];
     }
 
     /**

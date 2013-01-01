@@ -29,8 +29,14 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
     public function testLoadBrowser()
     {
         $this->assertTrue($this->container->hasDefinition('buzz.browser.foo'));
+        $this->assertTrue($this->container->hasDefinition('buzz.message_factory.foo'));
+
         $browser = $this->container->getDefinition('buzz.browser.foo');
-        $this->assertNull($browser->getArgument(1));
+        $this->assertEquals(new Reference('buzz.message_factory.foo'), $browser->getArgument(1));
+
+        $factory = $this->container->getDefinition('buzz.message_factory.foo');
+        $this->assertSame('Buzz\Message\Factory\Factory', $factory->getClass());
+
     }
 
     public function testLoadClient()
@@ -125,7 +131,7 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
                 'browsers' => array(
                     'foo' => array(
                         'client' => array('name' => 'curl', 'timeout' => 123),
-                        'message_factory' => 'foo',
+                        'message_factory' => 'Buzz\\Message\\Factory\\Factory',
                         'host' => 'my://foo',
                         'listeners' => array(
                             'foo_bar',
