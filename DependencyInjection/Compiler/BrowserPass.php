@@ -21,7 +21,6 @@ class BrowserPass implements CompilerPassInterface
         }
 
         $bm = $container->getDefinition('buzz.browser_manager');
-        $config = $container->getParameter('buzz');
 
         foreach ($container->findTaggedServiceIds('buzz.browser') as $serviceId => $tag) {
             $name = isset($tag[0]['alias'])
