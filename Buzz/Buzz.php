@@ -3,7 +3,6 @@
 namespace Buzz\Bundle\BuzzBundle\Buzz;
 
 use Buzz\Bundle\BuzzBundle\Buzz\BrowserManager;
-use Buzz\Bundle\BuzzBundle\Exception\BuzzException;
 
 class Buzz
 {
