@@ -50,9 +50,11 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Buzz\Client\Curl', get_class($curlClient));
 
         $calls = $client->getMethodCalls();
-        $this->assertCount(1, $calls);
+        $this->assertCount(2, $calls);
         $expected = array('setTimeout', array(123));
         $this->assertEquals($expected, $calls[0]);
+        $expected = array('setProxy', array('http://127.0.0.1'));
+        $this->assertEquals($expected, $calls[1]);
 
         $client = new Reference('buzz.client.foo');
         $this->assertEquals($client, $browser->getArgument(0));
@@ -118,7 +120,7 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
         $array = array(array('browsers' => array('foo' => array('client' => 'curl'))));
         $this->configs = $extension->load($array, $this->container);
 
-        $this->assertSame(array('name' => 'curl', 'timeout' => null), $this->configs['browsers']['foo']['client']);
+        $this->assertSame(array('name' => 'curl', 'timeout' => null, 'proxy' => null), $this->configs['browsers']['foo']['client']);
     }
 
     private function getConfig()
@@ -130,7 +132,7 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
                 ),
                 'browsers' => array(
                     'foo' => array(
-                        'client' => array('name' => 'curl', 'timeout' => 123),
+                        'client' => array('name' => 'curl', 'timeout' => 123, 'proxy' => 'http://127.0.0.1'),
                         'message_factory' => 'Buzz\\Message\\Factory\\Factory',
                         'host' => 'my://foo',
                         'listeners' => array(

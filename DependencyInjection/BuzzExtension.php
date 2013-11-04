@@ -112,6 +112,11 @@ class BuzzExtension extends Extension
             $definition->addMethodCall('setTimeout', array($timeout));
         }
 
+        $proxy = $config['client']['proxy'];
+        if (null !== $proxy) {
+            $definition->addMethodCall('setProxy', array($proxy));
+        }
+
         $browser->replaceArgument(0, new Reference('buzz.client.'.$name));
     }
 
