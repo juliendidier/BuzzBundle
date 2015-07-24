@@ -6,21 +6,21 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class BuzzExtension extends Extension
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('buzz.xml');
 
-        $configuration = new Configuration();
+        $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
         if ($config['throw_exception']) {
@@ -37,6 +37,14 @@ class BuzzExtension extends Extension
         $container->setParameter('buzz', $config);
 
         return $config;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+        return new Configuration($container->getParameter('kernel.debug'));
     }
 
     private function loadListenersSection(array $config, ContainerBuilder $container)
@@ -68,9 +76,9 @@ class BuzzExtension extends Extension
     {
         $browser = 'buzz.browser.'.$name;
 
-        $definition = $container->register($browser, 'Buzz\Browser')
-            ->setArguments(array(null, null))
-        ;
+        $definition = $container
+            ->register($browser, 'Buzz\Browser')
+            ->setArguments(array(null, null));
 
         if (null !== $config['message_factory']) {
             $factory = 'buzz.message_factory.'.$name;
@@ -79,9 +87,9 @@ class BuzzExtension extends Extension
             $definition->replaceArgument(1, new Reference($factory));
         }
 
-        $container->getDefinition('buzz.browser_manager')
-            ->addMethodCall('set', array($name, new Reference($browser)))
-        ;
+        $container
+            ->getDefinition('buzz.browser_manager')
+            ->addMethodCall('set', array($name, new Reference($browser)));
 
         $browser = $container->getDefinition($browser);
 
@@ -92,8 +100,7 @@ class BuzzExtension extends Extension
 
             $container
                 ->register($listener, 'Buzz\Bundle\BuzzBundle\Buzz\Listener\HostListener')
-                ->addArgument($config['host'])
-            ;
+                ->addArgument($config['host']);
 
             $browser->addMethodCall('addListener', array(new Reference($listener)));
         }
@@ -117,6 +124,26 @@ class BuzzExtension extends Extension
             $definition->addMethodCall('setProxy', array($proxy));
         }
 
+        $maxRedirects = $config['client']['max_redirects'];
+        if (null !== $maxRedirects) {
+            $definition->addMethodCall('setMaxRedirects', array($maxRedirects));
+        }
+
+        $verifyPeer = $config['client']['verify_peer'];
+        if (null !== $verifyPeer) {
+            $definition->addMethodCall('setVerifyPeer', array($verifyPeer));
+        }
+
+        $verifyHost = $config['client']['verify_host'];
+        if (null !== $verifyHost) {
+            $definition->addMethodCall('setVerifyHost', array($verifyHost));
+        }
+
+        $ignoreErrors = $config['client']['ignore_errors'];
+        if (null !== $ignoreErrors) {
+            $definition->addMethodCall('setIgnoreErrors', array($ignoreErrors));
+        }
+
         $browser->replaceArgument(0, new Reference('buzz.client.'.$name));
     }
 
@@ -126,9 +153,9 @@ class BuzzExtension extends Extension
         $loader->load('datacollector.xml');
 
         foreach($browserNames as $name) {
-            $container->getDefinition('buzz.browser.'.$name)
-                ->addMethodCall('addListener', array(new Reference('buzz.listener.history')))
-            ;
+            $container
+                ->getDefinition('buzz.browser.'.$name)
+                ->addMethodCall('addListener', array(new Reference('buzz.listener.history')));
         }
     }
 

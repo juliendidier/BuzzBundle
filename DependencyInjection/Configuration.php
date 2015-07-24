@@ -8,17 +8,24 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
+    private $debug;
+
+    public function __construct($debug)
+    {
+        $this->debug = (bool) $debug;
+    }
+
     /**
      * @inheritdoc
      */
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root("buzz");
+        $rootNode = $treeBuilder->root('buzz');
 
         $rootNode
             ->children()
-                ->booleanNode('profiler')->defaultValue('%kernel.debug%')->end()
+                ->booleanNode('profiler')->defaultValue($this->debug)->end()
                 ->booleanNode('throw_exception')->defaultValue(true)->end()
                 ->end()
             ->end()
@@ -84,6 +91,10 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('name')->end()
                 ->scalarNode('timeout')->defaultNull()->end()
                 ->scalarNode('proxy')->defaultNull()->end()
+                ->scalarNode('max_redirects')->defaultNull()->end()
+                ->scalarNode('verify_peer')->defaultNull()->end()
+                ->scalarNode('verify_host')->defaultNull()->end()
+                ->scalarNode('ignore_errors')->defaultNull()->end()
             ->end()
         ;
     }
