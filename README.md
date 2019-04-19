@@ -1,6 +1,6 @@
 # BuzzBundle
 
-[![Build Status](https://secure.travis-ci.org/juliendidier/BuzzBundle.png)](http://travis-ci.org/juliendidier/BuzzBundle)
+[![Build Status](https://travis-ci.org/andreyserdjuk/BuzzBundle.svg?branch=master)](https://travis-ci.org/andreyserdjuk/BuzzBundle)
 
 BuzzBundle is a Bundle for [Buzz](https://github.com/kriswallsmith/Buzz),
 a library for issuing HTTP requests by Kris Wallsmith
