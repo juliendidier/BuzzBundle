@@ -17,6 +17,10 @@ class BuzzDataCollector extends DataCollector
         $this->listener = $listener;
     }
 
+    public function reset()
+    {
+    }
+
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
         $this->data = array();
