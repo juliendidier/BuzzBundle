@@ -1,5 +1,5 @@
 {
-    "name": "juliendidier/buzz-bundle",
+    "name": "andreyserdjuk/buzz-bundle",
     "description": "A Symfony2 Bundle for Buzz library integration",
     "license": "MIT",
     "type": "symfony-bundle",
