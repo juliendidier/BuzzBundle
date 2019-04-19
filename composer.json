@@ -1,5 +1,6 @@
 {
     "name": "andreyserdjuk/buzz-bundle",
+    "version": "2.0.0",
     "description": "A Symfony2 Bundle for Buzz library integration",
     "license": "MIT",
     "type": "symfony-bundle",
