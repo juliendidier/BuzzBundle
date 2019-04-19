@@ -5,14 +5,15 @@ namespace Buzz\Bundle\BuzzBundle\Tests\DataCollector;
 use Buzz\Listener\HistoryListener;
 use Buzz\Listener\History\Entry;
 use Buzz\Listener\History\Journal;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use Buzz\Bundle\BuzzBundle\DataCollector\BuzzDataCollector;
 
-class BuzzDataCollectorTest extends \PHPUnit_Framework_TestCase
+class BuzzDataCollectorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!class_exists('Symfony\Component\HttpFoundation\Request')) {
             $this->markTestSkipped('The "HttpFoundation" component is not available');
@@ -46,8 +47,8 @@ class BuzzDataCollectorTest extends \PHPUnit_Framework_TestCase
     public function getTestEntry()
     {
         return array(
-            new Entry($this->getMock('Buzz\Message\Request'), $this->getMock('Buzz\Message\Response'), 2),
-            new Entry($this->getMock('Buzz\Message\Request'), $this->getMock('Buzz\Message\Response'), 9),
+            new Entry($this->createMock('Buzz\Message\Request'), $this->createMock('Buzz\Message\Response'), 2),
+            new Entry($this->createMock('Buzz\Message\Request'), $this->createMock('Buzz\Message\Response'), 9),
         );
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Buzz\Bundle\BuzzBundle\Tests\DependencyInjection\Factory\Message;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -9,11 +10,11 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Buzz\Bundle\BuzzBundle\DependencyInjection\BuzzExtension;
 use Buzz\Bundle\BuzzBundle\DependencyInjection\Compiler\BrowserPass;
 
-class BrowserPassTest extends \PHPUnit_Framework_TestCase
+class BrowserPassTest extends TestCase
 {
     public function testProcessNoConfig()
     {
-        $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerBuilder');
+        $container = $this->createMock('Symfony\Component\DependencyInjection\ContainerBuilder');
         $browserPass = new BrowserPass();
 
         $return = $browserPass->process($container);

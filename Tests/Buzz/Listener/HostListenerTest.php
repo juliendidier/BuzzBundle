@@ -3,13 +3,22 @@
 namespace Buzz\Bundle\BuzzBundle\Tests\Buzz\Listener;
 
 use Buzz\Bundle\BuzzBundle\Buzz\Listener\HostListener;
+use Buzz\Message\MessageInterface;
+use Buzz\Message\Request;
+use Buzz\Message\RequestInterface;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class HostListenerTest extends \PHPUnit_Framework_TestCase
+class HostListenerTest extends TestCase
 {
+    /**
+     * @throws \ReflectionException
+     */
     public function testPreSend()
     {
         $listener = new HostListener('my://foo');
-        $request = $this->getMock('Buzz\Message\Request');
+        /** @var RequestInterface|MockObject $request */
+        $request = $this->createMock(Request::class);
 
         $request->expects($this->once())
             ->method('setHost')
@@ -18,8 +27,10 @@ class HostListenerTest extends \PHPUnit_Framework_TestCase
 
         $listener->preSend($request);
 
-        $response = $this->getMock('Buzz\Message\MessageInterface');
-        $listener->postSend($cloneRequest = clone $request, $cloneResponse = clone $response);
+        $response = $this->createMock(MessageInterface::class);
+        /** @var RequestInterface|MockObject $cloneResponse */
+        $cloneResponse = clone $response;
+        $listener->postSend($cloneRequest = clone $request, $cloneResponse);
 
         $this->assertEquals($request, $cloneRequest, 'postSend does nothing on the request');
         $this->assertEquals($response, $cloneResponse, 'postSend does nothing on the response');
