@@ -1,5 +1,6 @@
 {
-    "name": "juliendidier/buzz-bundle",
+    "name": "andreyserdjuk/buzz-bundle",
+    "version": "2.0.0",
     "description": "A Symfony2 Bundle for Buzz library integration",
     "license": "MIT",
     "type": "symfony-bundle",
@@ -11,12 +12,14 @@
         }
     ],
     "require": {
-        "php": ">=5.3.2",
-        "symfony/symfony": "~2.1",
-        "kriswallsmith/buzz": "~0.7"
+        "php": ">=7.2",
+        "symfony/dependency-injection": "^4.0",
+        "kriswallsmith/buzz": "0.16.0"
     },
     "autoload": {
-        "psr-0": { "Buzz\\Bundle\\BuzzBundle": "" }
+        "psr-4": { "Buzz\\Bundle\\BuzzBundle\\": "" }
     },
-    "target-dir": "Buzz/Bundle/BuzzBundle"
+    "require-dev": {
+        "phpunit/phpunit": "^8.1"
+    }
 }

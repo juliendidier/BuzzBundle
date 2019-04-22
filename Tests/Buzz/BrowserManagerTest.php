@@ -6,11 +6,11 @@ use Buzz\Browser;
 use Buzz\Client\ClientInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Message\MessageInterface;
-use Buzz\Message\Factory\Factory;
-
 use Buzz\Bundle\BuzzBundle\Buzz\BrowserManager;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class BrowserManagerTest extends \PHPUnit_Framework_TestCase
+class BrowserManagerTest extends TestCase
 {
     public function testGetSetHas()
     {
@@ -59,12 +59,16 @@ class BrowserManagerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-
+    /**
+     * @throws \ReflectionException
+     */
     public function testGetIterator()
     {
         $bm = new BrowserManager();
-        $bm->set('foo', $this->getMock('Buzz\Browser'));
-        $bm->set('bar', $this->getMock('Buzz\Browser'));
+        /** @var Browser|MockObject $browserMock */
+        $browserMock = $this->createMock(Browser::class);
+        $bm->set('foo', $browserMock);
+        $bm->set('bar', $browserMock);
 
         $this->assertTrue($bm->getIterator() instanceof \ArrayIterator);
         $this->assertEquals(2, count($bm));

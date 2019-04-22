@@ -3,16 +3,17 @@
 namespace Buzz\Bundle\BuzzBundle\Tests\DependencyInjection;
 
 use Buzz\Bundle\BuzzBundle\DependencyInjection\BuzzExtension;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Reference;
 
-class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
+class BuzzExtensionTest extends TestCase
 {
     private $container;
     private $configs;
 
-    public function __construct()
+    public function setUp(): void
     {
         $extension = new BuzzExtension();
 
@@ -45,15 +46,15 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->container->hasDefinition('buzz.client.foo'));
         $client = $this->container->getDefinition('buzz.client.foo');
-        $this->assertTrue($client instanceof DefinitionDecorator);
+        $this->assertTrue($client instanceof ChildDefinition);
         $curlClient = $this->container->get($client->getParent());
         $this->assertEquals('Buzz\Client\Curl', get_class($curlClient));
 
         $calls = $client->getMethodCalls();
         $this->assertCount(2, $calls);
-        $expected = array('setTimeout', array(123));
+        $expected = ['setTimeout', [123]];
         $this->assertEquals($expected, $calls[0]);
-        $expected = array('setProxy', array('http://127.0.0.1'));
+        $expected = ['setProxy', ['http://127.0.0.1']];
         $this->assertEquals($expected, $calls[1]);
 
         $client = new Reference('buzz.client.foo');
@@ -62,18 +63,18 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadListener()
     {
-        $this->assertSame(array('id' => 'foo.bar'), $this->configs['listeners']['foo_bar']);
+        $this->assertSame(['id' => 'foo.bar'], $this->configs['listeners']['foo_bar']);
 
         $browser = $this->container->getDefinition('buzz.browser.foo');
         $calls = $browser->getMethodCalls();
         $this->assertCount(4, $calls);
-        $expected = array('addListener', array(new Reference('buzz.listener.host_foo')));
+        $expected = ['addListener', [new Reference('buzz.listener.host_foo')]];
         $this->assertEquals($expected, $calls[0]);
-        $expected = array('addListener', array(new Reference('buzz.listener.exception_listener')));
+        $expected = ['addListener', [new Reference('buzz.listener.exception_listener')]];
         $this->assertEquals($expected, $calls[1]);
-        $expected = array('addListener', array(new Reference('foo.bar')));
+        $expected = ['addListener', [new Reference('foo.bar')]];
         $this->assertEquals($expected, $calls[2]);
-        $expected = array('addListener', array(new Reference('buzz.listener.history')));
+        $expected = ['addListener', [new Reference('buzz.listener.history')]];
         $this->assertEquals($expected, $calls[3]);
 
         $this->assertTrue($this->container->hasDefinition('buzz.listener.host_foo'));
@@ -85,7 +86,7 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $calls = $this->container->getDefinition('buzz.browser_manager')->getMethodCalls();
         $this->assertCount(1, $calls);
-        $expected = array('set', array('foo', new Reference('buzz.browser.foo')));
+        $expected = ['set', ['foo', new Reference('buzz.browser.foo')]];
         $this->assertEquals($expected, $calls[0]);
     }
 
@@ -117,43 +118,57 @@ class BuzzExtensionTest extends \PHPUnit_Framework_TestCase
         $this->container = new ContainerBuilder();
         $extension = new BuzzExtension();
 
-        $array = array(array('browsers' => array('foo' => array('client' => 'curl'))));
+        $array = [
+            [
+                'browsers' => [
+                    'foo' => [
+                        'client' => 'curl',
+                    ],
+                ],
+            ],
+        ];
         $this->configs = $extension->load($array, $this->container);
 
-        $this->assertSame(array('name' => 'curl', 'timeout' => null, 'proxy' => null), $this->configs['browsers']['foo']['client']);
+        $this->assertSame(['name' => 'curl', 'timeout' => null, 'proxy' => null], $this->configs['browsers']['foo']['client']);
     }
 
     private function getConfig()
     {
-        return array(
-            array(
-                'listeners' => array(
-                    'foo_bar' => 'foo.bar'
-                ),
-                'browsers' => array(
-                    'foo' => array(
-                        'client' => array('name' => 'curl', 'timeout' => 123, 'proxy' => 'http://127.0.0.1'),
+        return [
+            [
+                'listeners' => [
+                    'foo_bar' => 'foo.bar',
+                ],
+                'browsers'  => [
+                    'foo' => [
+                        'client'          => [
+                            'name'    => 'curl',
+                            'timeout' => 123,
+                            'proxy'   => 'http://127.0.0.1',
+                        ],
                         'message_factory' => 'Buzz\\Message\\Factory\\Factory',
-                        'host' => 'my://foo',
-                        'listeners' => array(
+                        'host'            => 'my://foo',
+                        'listeners'       => [
                             'foo_bar',
-                        )
-                    )
-                )
-            )
-        );
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     private function getProfilerConfig()
     {
-        return array(
-            array(
+        return [
+            [
                 'throw_exception' => false,
-                'profiler' =>  true,
-                'browsers' => array(
-                    'foo' => array('client' => 'curl')
-                )
-            )
-        );
+                'profiler'        => true,
+                'browsers'        => [
+                    'foo' => [
+                        'client' => 'curl',
+                    ],
+                ],
+            ],
+        ];
     }
 }
